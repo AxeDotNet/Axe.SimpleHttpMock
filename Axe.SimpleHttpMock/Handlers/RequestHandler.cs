@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http;
 using System.Threading;
 
@@ -9,12 +7,9 @@ namespace Axe.SimpleHttpMock.Handlers
     public class RequestHandler : IRequestHandler
     {
         readonly Func<HttpRequestMessage, CancellationToken, HttpResponseMessage> m_handleFunc;
-        readonly List<Func<HttpRequestMessage, bool>> m_matchers;
+        readonly Func<HttpRequestMessage, bool> m_matcher;
 
-        static readonly List<Func<HttpRequestMessage, bool>> EmptyMatches =
-            new List<Func<HttpRequestMessage, bool>>();
-
-        internal RequestHandler(IEnumerable<Func<HttpRequestMessage, bool>> matchers,
+        internal RequestHandler(Func<HttpRequestMessage, bool> matcher,
             Func<HttpRequestMessage, CancellationToken, HttpResponseMessage> handleFunc)
         {
             if (handleFunc == null)
@@ -22,15 +17,18 @@ namespace Axe.SimpleHttpMock.Handlers
                 throw new ArgumentNullException(nameof(handleFunc));
             }
 
+            if (matcher == null)
+            {
+                throw new ArgumentNullException(nameof(matcher));
+            }
+
             m_handleFunc = handleFunc;
-            m_matchers = matchers == null
-                ? EmptyMatches
-                : new List<Func<HttpRequestMessage, bool>>(matchers);
+            m_matcher = matcher;
         }
 
         public bool IsMatch(HttpRequestMessage request)
         {
-            return m_matchers.All(isMatch => isMatch(request));
+            return m_matcher(request);
         }
 
         public HttpResponseMessage Handle(HttpRequestMessage request, CancellationToken cancellationToken)

@@ -5,7 +5,7 @@ using Xunit;
 
 namespace Axe.SimpleHttpMock.Test
 {
-    public class HttpServerHandlerFacts : HttpServerFactBase
+    public class MockHttpServerFacts : HttpServerFactBase
     {
         [Fact]
         public async Task should_return_404_if_there_is_no_handler()
@@ -55,12 +55,14 @@ namespace Axe.SimpleHttpMock.Test
             var server = new MockHttpServer();
 
             const string expectedResponseMessage = "First handler response";
+            var expectedResponse = new HttpResponseMessage(HttpStatusCode.OK)
+            {
+                Content = new StringContent(expectedResponseMessage)
+            };
+
             server.AddHandler(new DelegatedHandler(
                 _ => true,
-                (r, c) => new HttpResponseMessage(HttpStatusCode.OK)
-                {
-                    Content = new StringContent(expectedResponseMessage)
-                }));
+                (r, c) => expectedResponse));
             server.AddHandler(new DelegatedHandler(
                 _ => true,
                 (r, c) => new HttpResponseMessage(HttpStatusCode.BadRequest)));
@@ -70,8 +72,7 @@ namespace Axe.SimpleHttpMock.Test
             HttpResponseMessage response = await httpClient.GetAsync("http://uri.that.not.matches");
 
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-            string message = await response.Content.ReadAsStringAsync();
-            Assert.Equal(expectedResponseMessage, message);
+            Assert.Equal(expectedResponse, response);
         }
     }
 }

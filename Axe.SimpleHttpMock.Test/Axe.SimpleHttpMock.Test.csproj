@@ -58,7 +58,7 @@
   <ItemGroup>
     <Compile Include="DelegatedRequestHandler.cs" />
     <Compile Include="HttpServerFactBase.cs" />
-    <Compile Include="HttpServerHandlerFacts.cs" />
+    <Compile Include="MockHttpServerFacts.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
