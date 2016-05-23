@@ -54,9 +54,11 @@
   <ItemGroup>
     <Compile Include="Handlers\RequestHandler.cs" />
     <Compile Include="IRequestHandler.cs" />
+    <Compile Include="Matchers\HttpMethodMatcherExtensions.cs" />
     <Compile Include="MockHttpServer.cs" />
     <Compile Include="MockHttpServerExtension.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="WhenClause.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
