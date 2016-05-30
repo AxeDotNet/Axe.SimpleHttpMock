@@ -9,13 +9,16 @@ namespace Axe.SimpleHttpMock.Test.ExtensionFacts
 {
     public class HttpMethodMatcherFacts : HttpServerFactBase
     {
-        [Fact]
-        public async Task should_match_http_method()
+        [Theory]
+        [InlineData("GET")]
+        [InlineData("get")]
+        [InlineData("Get")]
+        public async Task should_match_http_method(string matchingMethod)
         {
             var server = new MockHttpServer();
             server
-                .When(req => req.IsMethod("get"))
-                .Response((req, c) => req.CreateResponse(HttpStatusCode.OK));
+                .When(req => req.IsMethod(matchingMethod))
+                .Response(req => req.CreateResponse(HttpStatusCode.OK));
 
             HttpClient client = CreateClient(server);
             HttpResponseMessage response = await client.GetAsync("http://it.should.match");
@@ -29,7 +32,7 @@ namespace Axe.SimpleHttpMock.Test.ExtensionFacts
             var server = new MockHttpServer();
             server
                 .When(req => req.IsMethod("post"))
-                .Response((req, c) => req.CreateResponse(HttpStatusCode.OK));
+                .Response(req => req.CreateResponse(HttpStatusCode.OK));
 
             HttpClient client = CreateClient(server);
             HttpResponseMessage response = await client.GetAsync("http://it.should.match");
@@ -43,7 +46,7 @@ namespace Axe.SimpleHttpMock.Test.ExtensionFacts
             var server = new MockHttpServer();
             server
                 .When(req => req.IsMethod("get", "post"))
-                .Response((req, c) => req.CreateResponse(HttpStatusCode.OK));
+                .Response(req => req.CreateResponse(HttpStatusCode.OK));
 
             HttpClient client = CreateClient(server);
             HttpResponseMessage response =

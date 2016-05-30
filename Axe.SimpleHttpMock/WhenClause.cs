@@ -31,5 +31,10 @@ namespace Axe.SimpleHttpMock
             m_server.AddHandler(new RequestHandler(m_requestMatchFunc, responseFunc));
             return m_server;
         }
+
+        public MockHttpServer Response(Func<HttpRequestMessage, HttpResponseMessage> responseFunc)
+        {
+            return Response((req, c) => responseFunc(req));
+        }
     }
 }

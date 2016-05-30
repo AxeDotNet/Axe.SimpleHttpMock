@@ -55,6 +55,8 @@
     <Compile Include="Handlers\RequestHandler.cs" />
     <Compile Include="IRequestHandler.cs" />
     <Compile Include="Matchers\HttpMethodMatcherExtensions.cs" />
+    <Compile Include="Matchers\HttpPathMatcherExtensions.cs" />
+    <Compile Include="Matchers\StringCompareMethod.cs" />
     <Compile Include="MockHttpServer.cs" />
     <Compile Include="MockHttpServerExtension.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

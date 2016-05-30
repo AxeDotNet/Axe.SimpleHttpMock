@@ -71,6 +71,7 @@
     <Compile Include="DelegatedRequestHandler.cs" />
     <Compile Include="ExtensionFacts\DelegatedWhenClauseFacts.cs" />
     <Compile Include="ExtensionFacts\HttpMethodMatcherFacts.cs" />
+    <Compile Include="ExtensionFacts\HttpPathMatcherFacts.cs" />
     <Compile Include="HttpServerFactBase.cs" />
     <Compile Include="MockHttpServerFacts.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
