@@ -54,6 +54,7 @@
   <ItemGroup>
     <Compile Include="Handlers\RequestHandler.cs" />
     <Compile Include="IRequestHandler.cs" />
+    <Compile Include="Matchers\HttpAuthorityMatcherExtensions.cs" />
     <Compile Include="Matchers\HttpMethodMatcherExtensions.cs" />
     <Compile Include="Matchers\HttpPathMatcherExtensions.cs" />
     <Compile Include="Matchers\StringCompareMethod.cs" />
