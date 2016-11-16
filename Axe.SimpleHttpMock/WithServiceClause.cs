@@ -20,7 +20,12 @@ namespace Axe.SimpleHttpMock
 
         public WithServiceClause Api(string uriTemplate, Func<HttpRequestMessage, IDictionary<string, object>, HttpResponseMessage> responseFunc)
         {
-            return Api(uriTemplate, null, responseFunc);
+            return Api(uriTemplate, (string[])null, responseFunc);
+        }
+
+        public WithServiceClause Api(string uriTemplate, string method, Func<HttpRequestMessage, IDictionary<string, object>, HttpResponseMessage> responseFunc)
+        {
+            return Api(uriTemplate, new [] {method}, responseFunc);
         }
 
         public WithServiceClause Api(string uriTemplate, string[] methods, Func<HttpRequestMessage, IDictionary<string, object>, HttpResponseMessage> responseFunc)
@@ -32,7 +37,12 @@ namespace Axe.SimpleHttpMock
 
         public WithServiceClause Api(string uriTemplate, Func<IDictionary<string, object>, HttpResponseMessage> responseFunc)
         {
-            return Api(uriTemplate, null, responseFunc);
+            return Api(uriTemplate, (string[])null, responseFunc);
+        }
+
+        public WithServiceClause Api(string uriTemplate, string method, Func<IDictionary<string, object>, HttpResponseMessage> responseFunc)
+        {
+            return Api(uriTemplate, new [] { method }, responseFunc);
         }
 
         public WithServiceClause Api(string uriTemplate, string[] methods, Func<IDictionary<string, object>, HttpResponseMessage> responseFunc)
@@ -42,7 +52,12 @@ namespace Axe.SimpleHttpMock
             return this;
         }
 
-        public WithServiceClause Api(string uriTemplate, HttpStatusCode statusCode, params string[] methods)
+        public WithServiceClause Api(string uriTemplate, string method, HttpStatusCode statusCode)
+        {
+            return Api(uriTemplate, new[] {method}, statusCode);
+        }
+
+        public WithServiceClause Api(string uriTemplate, string[] methods, HttpStatusCode statusCode)
         {
             return Api(uriTemplate, methods, _ => statusCode.AsResponse());
         }

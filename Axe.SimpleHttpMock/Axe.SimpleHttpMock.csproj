@@ -65,6 +65,7 @@
     <Compile Include="WithServiceClause.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Axe.SimpleHttpMock.nuspec" />
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
