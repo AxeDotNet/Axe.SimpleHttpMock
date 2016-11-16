@@ -52,6 +52,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Handlers\MatchingResult.cs" />
     <Compile Include="Handlers\RequestHandler.cs" />
     <Compile Include="IRequestHandler.cs" />
     <Compile Include="Matchers\HttpAuthorityMatcherExtensions.cs" />

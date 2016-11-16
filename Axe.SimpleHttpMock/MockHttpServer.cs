@@ -28,7 +28,7 @@ namespace Axe.SimpleHttpMock
             }
 
             return Task.Factory.StartNew(
-                () => matchedHandler.Handle(request, cancellationToken),
+                () => matchedHandler.Handle(request, matchedHandler.GetParameters(request), cancellationToken),
                 cancellationToken);
         }
     }

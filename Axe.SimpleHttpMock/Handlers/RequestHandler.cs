@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Dynamic;
 using System.Net.Http;
 using System.Threading;
 
@@ -6,11 +8,12 @@ namespace Axe.SimpleHttpMock.Handlers
 {
     public class RequestHandler : IRequestHandler
     {
-        readonly Func<HttpRequestMessage, CancellationToken, HttpResponseMessage> m_handleFunc;
-        readonly Func<HttpRequestMessage, bool> m_matcher;
+        readonly Func<HttpRequestMessage, dynamic, CancellationToken, HttpResponseMessage> m_handleFunc;
+        readonly Func<HttpRequestMessage, MatchingResult> m_matcher;
 
-        internal RequestHandler(Func<HttpRequestMessage, bool> matcher,
-            Func<HttpRequestMessage, CancellationToken, HttpResponseMessage> handleFunc)
+        internal RequestHandler(
+            Func<HttpRequestMessage, MatchingResult> matcher,
+            Func<HttpRequestMessage, dynamic, CancellationToken, HttpResponseMessage> handleFunc)
         {
             if (handleFunc == null)
             {
@@ -31,9 +34,20 @@ namespace Axe.SimpleHttpMock.Handlers
             return m_matcher(request);
         }
 
-        public HttpResponseMessage Handle(HttpRequestMessage request, CancellationToken cancellationToken)
+        public IDictionary<string, object> GetParameters(HttpRequestMessage request)
         {
-            return m_handleFunc(request, cancellationToken);
+            return m_matcher(request).Parameters;
+        }
+
+        public HttpResponseMessage Handle(HttpRequestMessage request, IDictionary<string, object> parameters, CancellationToken cancellationToken)
+        {
+            IDictionary<string, object> p = new ExpandoObject();
+            foreach (KeyValuePair<string, object> kvp in parameters)
+            {
+                p.Add(kvp);
+            }
+
+            return m_handleFunc(request, (dynamic) p, cancellationToken);
         }
     }
 }

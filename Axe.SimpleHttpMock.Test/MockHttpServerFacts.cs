@@ -26,7 +26,7 @@ namespace Axe.SimpleHttpMock.Test
             var expectedResponse = new HttpResponseMessage(HttpStatusCode.OK);
             server.AddHandler(new DelegatedHandler(
                 _ => true,
-                (r, c) => expectedResponse));
+                (r, p, c) => expectedResponse));
             
             HttpClient httpClient = CreateClient(server);
             HttpResponseMessage response = await httpClient.GetAsync("http://uri.that.matches");
@@ -41,7 +41,7 @@ namespace Axe.SimpleHttpMock.Test
             
             server.AddHandler(new DelegatedHandler(
                 _ => false,
-                (r, c) => new HttpResponseMessage(HttpStatusCode.OK)));
+                (r, p, c) => new HttpResponseMessage(HttpStatusCode.OK)));
 
             HttpClient httpClient = CreateClient(server);
             HttpResponseMessage response = await httpClient.GetAsync("http://uri.that.not.matches");
@@ -62,10 +62,10 @@ namespace Axe.SimpleHttpMock.Test
 
             server.AddHandler(new DelegatedHandler(
                 _ => true,
-                (r, c) => expectedResponse));
+                (r, p, c) => expectedResponse));
             server.AddHandler(new DelegatedHandler(
                 _ => true,
-                (r, c) => new HttpResponseMessage(HttpStatusCode.BadRequest)));
+                (r, p, c) => new HttpResponseMessage(HttpStatusCode.BadRequest)));
 
 
             HttpClient httpClient = CreateClient(server);

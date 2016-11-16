@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Net.Http;
+using Axe.SimpleHttpMock.Handlers;
 
 namespace Axe.SimpleHttpMock
 {
@@ -7,7 +8,7 @@ namespace Axe.SimpleHttpMock
     {
         public static WhenClause When(
             this MockHttpServer server,
-            Func<HttpRequestMessage, bool> requestMatchFunc)
+            Func<HttpRequestMessage, MatchingResult> requestMatchFunc)
         {
             return new WhenClause(server, requestMatchFunc);
         }

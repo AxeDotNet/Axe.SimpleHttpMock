@@ -15,7 +15,7 @@ namespace Axe.SimpleHttpMock.Test.ExtensionFacts
             var server = new MockHttpServer();
 
             server.When(req => req.PathIs("user/login"))
-                .Response(req => req.CreateResponse(HttpStatusCode.OK));
+                .Response((req, q) => req.CreateResponse(HttpStatusCode.OK));
 
             HttpClient client = CreateClient(server);
 
@@ -29,7 +29,7 @@ namespace Axe.SimpleHttpMock.Test.ExtensionFacts
             var server = new MockHttpServer();
             server
                 .When(req => req.PathIs("/user/login"))
-                .Response(req => req.CreateResponse(HttpStatusCode.OK));
+                .Response((req, q) => req.CreateResponse(HttpStatusCode.OK));
 
             HttpClient client = CreateClient(server);
             HttpResponseMessage response = await client.GetAsync(
@@ -44,7 +44,7 @@ namespace Axe.SimpleHttpMock.Test.ExtensionFacts
             var server = new MockHttpServer();
             server
                 .When(req => req.PathIs("/user/Login"))
-                .Response(req => req.CreateResponse(HttpStatusCode.OK));
+                .Response((req, q) => req.CreateResponse(HttpStatusCode.OK));
 
             HttpClient client = CreateClient(server);
             HttpResponseMessage response = await client.GetAsync(
@@ -59,7 +59,7 @@ namespace Axe.SimpleHttpMock.Test.ExtensionFacts
             var server = new MockHttpServer();
             server
                 .When(req => req.PathIs("/user/Login", StringCompareMethod.CaseInsensitive))
-                .Response(req => req.CreateResponse(HttpStatusCode.OK));
+                .Response((req, q) => req.CreateResponse(HttpStatusCode.OK));
 
             HttpClient client = CreateClient(server);
             HttpResponseMessage response = await client.GetAsync(
@@ -74,7 +74,7 @@ namespace Axe.SimpleHttpMock.Test.ExtensionFacts
             var server = new MockHttpServer();
             server
                 .When(req => req.PathIs("/user/login"))
-                .Response(req => req.CreateResponse(HttpStatusCode.OK));
+                .Response((req, q) => req.CreateResponse(HttpStatusCode.OK));
 
             HttpClient client = CreateClient(server);
             HttpResponseMessage response = await client.GetAsync(

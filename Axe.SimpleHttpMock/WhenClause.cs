@@ -10,9 +10,9 @@ namespace Axe.SimpleHttpMock
     public class WhenClause
     {
         readonly MockHttpServer m_server;
-        readonly Func<HttpRequestMessage, bool> m_requestMatchFunc;
+        readonly Func<HttpRequestMessage, MatchingResult> m_requestMatchFunc;
 
-        public WhenClause(MockHttpServer server, Func<HttpRequestMessage, bool> requestMatchFunc)
+        public WhenClause(MockHttpServer server, Func<HttpRequestMessage, MatchingResult> requestMatchFunc)
         {
             if (requestMatchFunc == null)
             {
@@ -23,7 +23,7 @@ namespace Axe.SimpleHttpMock
             m_requestMatchFunc = requestMatchFunc;
         }
 
-        public MockHttpServer Response(Func<HttpRequestMessage, CancellationToken, HttpResponseMessage> responseFunc)
+        public MockHttpServer Response(Func<HttpRequestMessage, dynamic, CancellationToken, HttpResponseMessage> responseFunc)
         {
             if (responseFunc == null)
             {
@@ -55,9 +55,34 @@ namespace Axe.SimpleHttpMock
                 });
         }
 
-        public MockHttpServer Response(Func<HttpRequestMessage, HttpResponseMessage> responseFunc)
+        public MockHttpServer Response(Func<HttpRequestMessage, dynamic, HttpResponseMessage> responseFunc)
         {
-            return Response((req, c) => responseFunc(req));
+            return Response((req, p, c) => responseFunc(req, p));
+        }
+
+        public MockHttpServer Response(Func<dynamic, HttpResponseMessage> responseFunc)
+        {
+            return Response((req, p) => responseFunc(p));
         }
     }
+
+//    public class BatchClause
+//    {
+//        readonly MockHttpServer m_server;
+//        readonly Uri m_batchPrefix;
+//        readonly List<RequestHandler> m_requestHandlers = new List<RequestHandler>();
+//
+//        public BatchClause(MockHttpServer server, Uri batchPrefix)
+//        {
+//            m_server = server;
+//            m_batchPrefix = batchPrefix;
+//        }
+//
+//        public BatchClause Api(
+//            Func<HttpRequestMessage, bool> requestMatcherFunc,
+//            Func<HttpRequestMessage, dynamic, HttpResponseMessage> responseFunc)
+//        {
+//            m_requestHandlers.Add(new RequestHandler(requestMatcherFunc, responseFunc));
+//        }
+//    }
 }
