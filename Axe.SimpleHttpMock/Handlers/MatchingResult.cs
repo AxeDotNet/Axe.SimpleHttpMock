@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Axe.SimpleHttpMock.Handlers
 {
@@ -8,10 +10,20 @@ namespace Axe.SimpleHttpMock.Handlers
         public IDictionary<string, object> Parameters { get; }
         static readonly Dictionary<string, object> emptyDictionary = new Dictionary<string, object>();
 
-        public MatchingResult(bool isMatch, IDictionary<string, object> parameters)
+        public MatchingResult(bool isMatch, IEnumerable<KeyValuePair<string, object>> parameters)
         {
             IsMatch = isMatch;
-            Parameters = parameters ?? emptyDictionary;
+            Parameters = CreateParameters(parameters);
+        }
+
+        IDictionary<string, object> CreateParameters(IEnumerable<KeyValuePair<string, object>> parameters)
+        {
+            if (parameters == null)
+            {
+                return emptyDictionary;
+            }
+
+            return parameters.ToDictionary(o => o.Key, o => o.Value, StringComparer.InvariantCultureIgnoreCase);
         }
 
         public static implicit operator bool(MatchingResult result)

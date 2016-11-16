@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Formatting;
@@ -23,7 +24,7 @@ namespace Axe.SimpleHttpMock
             m_requestMatchFunc = requestMatchFunc;
         }
 
-        public MockHttpServer Response(Func<HttpRequestMessage, dynamic, CancellationToken, HttpResponseMessage> responseFunc)
+        public MockHttpServer Response(Func<HttpRequestMessage, IDictionary<string, object>, CancellationToken, HttpResponseMessage> responseFunc)
         {
             if (responseFunc == null)
             {
@@ -55,34 +56,14 @@ namespace Axe.SimpleHttpMock
                 });
         }
 
-        public MockHttpServer Response(Func<HttpRequestMessage, dynamic, HttpResponseMessage> responseFunc)
+        public MockHttpServer Response(Func<HttpRequestMessage, IDictionary<string, object>, HttpResponseMessage> responseFunc)
         {
             return Response((req, p, c) => responseFunc(req, p));
         }
 
-        public MockHttpServer Response(Func<dynamic, HttpResponseMessage> responseFunc)
+        public MockHttpServer Response(Func<IDictionary<string, object>, HttpResponseMessage> responseFunc)
         {
             return Response((req, p) => responseFunc(p));
         }
     }
-
-//    public class BatchClause
-//    {
-//        readonly MockHttpServer m_server;
-//        readonly Uri m_batchPrefix;
-//        readonly List<RequestHandler> m_requestHandlers = new List<RequestHandler>();
-//
-//        public BatchClause(MockHttpServer server, Uri batchPrefix)
-//        {
-//            m_server = server;
-//            m_batchPrefix = batchPrefix;
-//        }
-//
-//        public BatchClause Api(
-//            Func<HttpRequestMessage, bool> requestMatcherFunc,
-//            Func<HttpRequestMessage, dynamic, HttpResponseMessage> responseFunc)
-//        {
-//            m_requestHandlers.Add(new RequestHandler(requestMatcherFunc, responseFunc));
-//        }
-//    }
 }

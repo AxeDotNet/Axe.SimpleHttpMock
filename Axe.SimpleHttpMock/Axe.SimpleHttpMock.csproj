@@ -40,6 +40,7 @@
       <HintPath>..\packages\Microsoft.AspNet.WebApi.Client.5.0.0\lib\net45\System.Net.Http.Formatting.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="System.ServiceModel" />
     <Reference Include="System.Web.Http, Version=5.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.AspNet.WebApi.Core.5.0.0\lib\net45\System.Web.Http.dll</HintPath>
       <Private>True</Private>
@@ -55,14 +56,13 @@
     <Compile Include="Handlers\MatchingResult.cs" />
     <Compile Include="Handlers\RequestHandler.cs" />
     <Compile Include="IRequestHandler.cs" />
-    <Compile Include="Matchers\HttpAuthorityMatcherExtensions.cs" />
-    <Compile Include="Matchers\HttpMethodMatcherExtensions.cs" />
-    <Compile Include="Matchers\HttpPathMatcherExtensions.cs" />
-    <Compile Include="Matchers\StringCompareMethod.cs" />
+    <Compile Include="Matchers\TheRequest.cs" />
     <Compile Include="MockHttpServer.cs" />
     <Compile Include="MockHttpServerExtension.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ResponseExtension.cs" />
     <Compile Include="WhenClause.cs" />
+    <Compile Include="WithServiceClause.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

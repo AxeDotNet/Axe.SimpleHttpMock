@@ -12,5 +12,12 @@ namespace Axe.SimpleHttpMock
         {
             return new WhenClause(server, requestMatchFunc);
         }
+
+        public static WithServiceClause WithService(
+            this MockHttpServer server,
+            string serviceUriPrefix)
+        {
+            return new WithServiceClause(server, serviceUriPrefix);
+        }
     }
 }
