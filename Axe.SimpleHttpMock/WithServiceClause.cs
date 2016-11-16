@@ -62,6 +62,11 @@ namespace Axe.SimpleHttpMock
             return Api(uriTemplate, methods, _ => statusCode.AsResponse());
         }
 
+        public WithServiceClause Api(string uriTemplate, HttpStatusCode statusCode)
+        {
+            return Api(uriTemplate, (string[])null, _ => statusCode.AsResponse());
+        }
+        
         public MockHttpServer Done()
         {
             return server;
