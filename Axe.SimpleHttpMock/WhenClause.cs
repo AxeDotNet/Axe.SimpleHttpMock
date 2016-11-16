@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Net;
 using System.Net.Http;
+using System.Net.Http.Formatting;
 using System.Threading;
 using Axe.SimpleHttpMock.Handlers;
 
@@ -30,6 +32,27 @@ namespace Axe.SimpleHttpMock
 
             m_server.AddHandler(new RequestHandler(m_requestMatchFunc, responseFunc));
             return m_server;
+        }
+
+        public MockHttpServer Response(
+            HttpStatusCode statusCode,
+            object payload = null,
+            MediaTypeFormatter formatter = null)
+        {
+            return Response(
+                req =>
+                {
+                    ObjectContent<object> content = payload == null
+                        ? null
+                        : new ObjectContent<object>(
+                            payload,
+                            formatter ?? new JsonMediaTypeFormatter());
+
+                    return new HttpResponseMessage(statusCode)
+                    {
+                        Content = content
+                    };
+                });
         }
 
         public MockHttpServer Response(Func<HttpRequestMessage, HttpResponseMessage> responseFunc)

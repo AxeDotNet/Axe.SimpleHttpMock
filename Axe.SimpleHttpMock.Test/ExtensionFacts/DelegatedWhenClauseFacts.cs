@@ -11,8 +11,7 @@ namespace Axe.SimpleHttpMock.Test.ExtensionFacts
         public async Task should_return_expected_response_if_match()
         {
             var server = new MockHttpServer();
-            server.When(_ => true)
-                .Response((req, c) => req.CreateResponse(HttpStatusCode.OK));
+            server.When(_ => true).Response(HttpStatusCode.OK);
 
             HttpClient client = CreateClient(server);
             HttpResponseMessage response = await client.GetAsync("http://should.return.ok.com/");
@@ -24,11 +23,11 @@ namespace Axe.SimpleHttpMock.Test.ExtensionFacts
         {
             var server = new MockHttpServer();
             server.When(_ => false)
-                .Response((req, c) => req.CreateResponse(HttpStatusCode.OK))
+                .Response(HttpStatusCode.OK)
                 .When(_ => true)
-                .Response((req, c) => req.CreateResponse(HttpStatusCode.NoContent))
+                .Response(HttpStatusCode.NoContent)
                 .When(_ => true)
-                .Response((req, c) => req.CreateResponse(HttpStatusCode.Continue));
+                .Response(HttpStatusCode.Continue);
 
             HttpClient client = CreateClient(server);
             HttpResponseMessage response = await client.GetAsync("http://should.return.ok.com/");
