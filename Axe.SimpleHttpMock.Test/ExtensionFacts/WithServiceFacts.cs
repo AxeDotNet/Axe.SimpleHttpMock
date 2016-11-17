@@ -1,5 +1,6 @@
 ﻿using System.Net;
 using System.Net.Http;
+using System.Net.Http.Formatting;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -32,6 +33,27 @@ namespace Axe.SimpleHttpMock.Test.ExtensionFacts
             AssertCalled(httpServer, "2");
             AssertCalled(httpServer, "3");
             AssertCalled(httpServer, "4");
+        }
+
+        [Fact]
+        public async void should_verify_request_content()
+        {
+            var server = new MockHttpServer();
+            server.WithService("http://www.baidu.com")
+                .Api("login", "POST", HttpStatusCode.OK, "login");
+
+            var client = new HttpClient(server);
+
+            HttpResponseMessage response = await client.PostAsync(
+                "http://www.baidu.com/login",
+                new {username = "n", password = "p"},
+                new JsonMediaTypeFormatter());
+
+            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+
+            await server.GetNamedHandlerTracer("login").VerifyAnonymousRequestContentAsync(
+                new {username = string.Empty, password = string.Empty},
+                c => c.username == "n" && c.password == "p");
         }
 
         static void AssertCalled(MockHttpServer httpServer, string handlerName)

@@ -1,5 +1,10 @@
 ﻿using System;
 using System.Linq;
+using System.Net.Http;
+using System.Net.Http.Formatting;
+using System.Threading.Tasks;
+using Axe.SimpleHttpMock.Handlers;
+using Newtonsoft.Json;
 
 namespace Axe.SimpleHttpMock
 {
@@ -46,6 +51,60 @@ namespace Axe.SimpleHttpMock
             int actualCalledCount = tracer.CallingHistories.Count;
             if (actualCalledCount == 0) { return; }
             throw new VerifyException($"The API has been called for {actualCalledCount} time(s). But your expectation is not being called.");
+        }
+
+        public static Task VerifyRequestContentAsync<T>(
+            this IRequestHandlerTracer tracer,
+            Func<T, bool> verifyFunc)
+        {
+            HttpContent content = GetSingleRequestContent(tracer);
+
+            Task verifyTask = content.ReadAsAsync<T>(new[] {new JsonMediaTypeFormatter()})
+                .ContinueWith(
+                    t =>
+                    {
+                        T o = t.Result;
+                        if (verifyFunc(o)) return;
+                        throw new VerifyException("The content did not pass the verify process.");
+                    });
+            verifyTask.ConfigureAwait(false);
+
+            return verifyTask;
+        }
+
+        static HttpContent GetSingleRequestContent(IRequestHandlerTracer tracer)
+        {
+            int count = tracer.CallingHistories.Count;
+            if (count != 1)
+            {
+                throw new VerifyException(
+                    $"There are {count} request available and I do not know which one to take.");
+            }
+
+            CallingContext context = tracer.CallingHistories.Single();
+            HttpRequestMessage request = context.Request;
+
+            if (request == null)
+            {
+                throw new VerifyException("Oops, the request is not available.");
+            }
+
+            HttpContent content = request.Content;
+            if (content == null)
+            {
+                throw new VerifyException("There is no content in this request.");
+            }
+            return content;
+        }
+
+        public static Task VerifyAnonymousRequestContentAsync<T>(
+            this IRequestHandlerTracer tracer,
+            T template,
+            Func<T, bool> verifyFunc)
+        {
+            return VerifyRequestContentAsync(
+                tracer,
+                verifyFunc);
         }
     }
 }
