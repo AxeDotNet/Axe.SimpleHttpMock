@@ -29,7 +29,8 @@ namespace Axe.SimpleHttpMock.Test
             var expectedResponse = new HttpResponseMessage(HttpStatusCode.OK);
             server.AddHandler(new RequestHandler(
                 _ => true,
-                (r, p, c) => expectedResponse));
+                (r, p, c) => expectedResponse,
+                null));
             
             HttpClient httpClient = CreateClient(server);
             HttpResponseMessage response = await httpClient.GetAsync("http://uri.that.matches");
@@ -44,7 +45,8 @@ namespace Axe.SimpleHttpMock.Test
             
             server.AddHandler(new RequestHandler(
                 _ => false,
-                (r, p, c) => new HttpResponseMessage(HttpStatusCode.OK)));
+                (r, p, c) => new HttpResponseMessage(HttpStatusCode.OK),
+                null));
 
             HttpClient httpClient = CreateClient(server);
             HttpResponseMessage response = await httpClient.GetAsync("http://uri.that.not.matches");
@@ -65,10 +67,12 @@ namespace Axe.SimpleHttpMock.Test
 
             server.AddHandler(new RequestHandler(
                 _ => true,
-                (r, p, c) => expectedResponse));
+                (r, p, c) => expectedResponse,
+                null));
             server.AddHandler(new RequestHandler(
                 _ => true,
-                (r, p, c) => new HttpResponseMessage(HttpStatusCode.BadRequest)));
+                (r, p, c) => new HttpResponseMessage(HttpStatusCode.BadRequest),
+                null));
             
             HttpClient httpClient = CreateClient(server);
             HttpResponseMessage response = await httpClient.GetAsync("http://uri.that.not.matches");
@@ -87,9 +91,9 @@ namespace Axe.SimpleHttpMock.Test
                 (r, p, c) => HttpStatusCode.OK.AsResponse(),
                 "handlerName"));
 
-            IRequestHandlerTracer handlerTracer = server.GetNamedRoute("handlerName");
+            IRequestHandlerTracer handlerTracer = server.GetNamedHandlerTracer("handlerName");
             Assert.NotNull(handlerTracer);
-            Assert.Throws<KeyNotFoundException>(() => server.GetNamedRoute("notExist"));
+            Assert.Throws<KeyNotFoundException>(() => server.GetNamedHandlerTracer("notExist"));
         }
 
         [Fact]
@@ -101,7 +105,7 @@ namespace Axe.SimpleHttpMock.Test
                 (r, p, c) => HttpStatusCode.OK.AsResponse(),
                 "handlerName"));
 
-            IRequestHandlerTracer handlerTracer = server.GetNamedRoute("handlerName");
+            IRequestHandlerTracer handlerTracer = server.GetNamedHandlerTracer("handlerName");
             handlerTracer.VerifyNotCalled();
             Assert.Throws<VerifyException>(() => handlerTracer.VerifyHasBeenCalled());
         }
@@ -115,7 +119,7 @@ namespace Axe.SimpleHttpMock.Test
                 (r, p, c) => HttpStatusCode.OK.AsResponse(),
                 "handlerName"));
 
-            IRequestHandlerTracer handlerTracer = server.GetNamedRoute("handlerName");
+            IRequestHandlerTracer handlerTracer = server.GetNamedHandlerTracer("handlerName");
 
             HttpClient httpClient = CreateClient(server);
             await httpClient.GetAsync("http://uri.that.matches");
@@ -134,7 +138,7 @@ namespace Axe.SimpleHttpMock.Test
                 (r, p, c) => HttpStatusCode.OK.AsResponse(),
                 "handlerName"));
 
-            IRequestHandlerTracer handlerTracer = server.GetNamedRoute("handlerName");
+            IRequestHandlerTracer handlerTracer = server.GetNamedHandlerTracer("handlerName");
 
             HttpClient httpClient = CreateClient(server);
             await httpClient.GetAsync("http://uri.that.matches/");
@@ -157,7 +161,7 @@ namespace Axe.SimpleHttpMock.Test
                 (r, p, c) => HttpStatusCode.OK.AsResponse(),
                 "handlerName"));
 
-            IRequestHandlerTracer handlerTracer = server.GetNamedRoute("handlerName");
+            IRequestHandlerTracer handlerTracer = server.GetNamedHandlerTracer("handlerName");
 
             HttpClient httpClient = CreateClient(server);
             await httpClient.GetAsync("http://uri.that.matches/");

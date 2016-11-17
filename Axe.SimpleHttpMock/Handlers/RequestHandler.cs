@@ -11,7 +11,7 @@ namespace Axe.SimpleHttpMock.Handlers
         readonly MatchingFunc m_matcher;
         readonly List<CallingContext> m_callingHistories = new List<CallingContext>(); 
 
-        internal RequestHandler(MatchingFunc matcher, HandlerFunc handleFunc, string name = null)
+        internal RequestHandler(MatchingFunc matcher, HandlerFunc handleFunc, string name)
         {
             if (handleFunc == null)
             {

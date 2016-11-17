@@ -37,7 +37,7 @@ namespace Axe.SimpleHttpMock
                 cancellationToken);
         }
 
-        public IRequestHandlerTracer GetNamedRoute(string name)
+        public IRequestHandlerTracer GetNamedHandlerTracer(string name)
         {
             return m_namedHandlers[name];
         }

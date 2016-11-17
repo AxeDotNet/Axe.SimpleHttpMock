@@ -20,76 +20,83 @@ namespace Axe.SimpleHttpMock
 
         public WithServiceClause Api(
             string uriTemplate,
-            Func<HttpRequestMessage, IDictionary<string, object>, HttpResponseMessage> responseFunc)
+            Func<HttpRequestMessage, IDictionary<string, object>, HttpResponseMessage> responseFunc,
+            string name = null)
         {
-            return Api(uriTemplate, (string[]) null, responseFunc);
+            return Api(uriTemplate, (string[]) null, responseFunc, name);
         }
 
         public WithServiceClause Api(
             string uriTemplate,
             string method,
-            Func<HttpRequestMessage, IDictionary<string, object>, HttpResponseMessage> responseFunc)
+            Func<HttpRequestMessage, IDictionary<string, object>, HttpResponseMessage> responseFunc,
+            string name = null)
         {
-            return Api(uriTemplate, new[] {method}, responseFunc);
+            return Api(uriTemplate, new[] {method}, responseFunc, name);
         }
 
         public WithServiceClause Api(
             string uriTemplate,
             string[] methods,
-            Func<HttpRequestMessage, IDictionary<string, object>, HttpResponseMessage> responseFunc)
+            Func<HttpRequestMessage, IDictionary<string, object>, HttpResponseMessage> responseFunc,
+            string name = null)
         {
             MatchingFunc matchingFunc = TheRequest.Is(
                 serviceUriPrefix,
                 uriTemplate,
                 methods);
-            new WhenClause(server, matchingFunc).Response(responseFunc);
+            new WhenClause(server, matchingFunc, name).Response(responseFunc);
             return this;
         }
 
         public WithServiceClause Api(
             string uriTemplate,
-            Func<IDictionary<string, object>, HttpResponseMessage> responseFunc)
+            Func<IDictionary<string, object>, HttpResponseMessage> responseFunc,
+            string name = null)
         {
-            return Api(uriTemplate, (string[]) null, responseFunc);
+            return Api(uriTemplate, (string[]) null, responseFunc, name);
         }
 
         public WithServiceClause Api(
             string uriTemplate,
             string method,
-            Func<IDictionary<string, object>, HttpResponseMessage> responseFunc)
+            Func<IDictionary<string, object>, HttpResponseMessage> responseFunc,
+            string name = null)
         {
-            return Api(uriTemplate, new[] {method}, responseFunc);
+            return Api(uriTemplate, new[] {method}, responseFunc, name);
         }
 
         public WithServiceClause Api(
             string uriTemplate,
             string[] methods,
-            Func<IDictionary<string, object>, HttpResponseMessage> responseFunc)
+            Func<IDictionary<string, object>, HttpResponseMessage> responseFunc,
+            string name = null)
         {
             MatchingFunc matchingFunc = TheRequest.Is(
                 serviceUriPrefix,
                 uriTemplate,
                 methods);
-            new WhenClause(server, matchingFunc).Response(responseFunc);
+            new WhenClause(server, matchingFunc, name).Response(responseFunc);
             return this;
         }
 
-        public WithServiceClause Api(string uriTemplate, string method, HttpStatusCode statusCode)
+        public WithServiceClause Api(string uriTemplate, string method, HttpStatusCode statusCode, string name = null)
         {
-            return Api(uriTemplate, new[] {method}, statusCode);
+            return Api(uriTemplate, new[] {method}, statusCode, name);
         }
 
         public WithServiceClause Api(
             string uriTemplate,
             string[] methods,
-            HttpStatusCode statusCode)
+            HttpStatusCode statusCode,
+            string name = null)
         {
-            return Api(uriTemplate, methods, _ => statusCode.AsResponse());
+            return Api(uriTemplate, methods, _ => statusCode.AsResponse(), name);
         }
 
-        public WithServiceClause Api(string uriTemplate, HttpStatusCode statusCode)
+        public WithServiceClause Api(string uriTemplate, HttpStatusCode statusCode, string name = null)
         {
-            return Api(uriTemplate, (string[]) null, _ => statusCode.AsResponse());
+            return Api(uriTemplate, (string[]) null, _ => statusCode.AsResponse(), name);
         }
 
         public MockHttpServer Done()

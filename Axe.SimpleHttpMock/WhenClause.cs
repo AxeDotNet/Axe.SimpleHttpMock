@@ -11,8 +11,9 @@ namespace Axe.SimpleHttpMock
     {
         readonly MockHttpServer m_server;
         readonly MatchingFunc m_requestMatchFunc;
+        readonly string m_name;
 
-        public WhenClause(MockHttpServer server, MatchingFunc requestMatchFunc)
+        public WhenClause(MockHttpServer server, MatchingFunc requestMatchFunc, string name)
         {
             if (requestMatchFunc == null)
             {
@@ -21,6 +22,7 @@ namespace Axe.SimpleHttpMock
 
             m_server = server;
             m_requestMatchFunc = requestMatchFunc;
+            m_name = name;
         }
 
         public MockHttpServer Response(HandlerFunc responseFunc)
@@ -30,7 +32,7 @@ namespace Axe.SimpleHttpMock
                 throw new ArgumentNullException(nameof(responseFunc));
             }
 
-            m_server.AddHandler(new RequestHandler(m_requestMatchFunc, responseFunc));
+            m_server.AddHandler(new RequestHandler(m_requestMatchFunc, responseFunc, m_name));
             return m_server;
         }
 
