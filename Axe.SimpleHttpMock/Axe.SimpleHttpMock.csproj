@@ -53,14 +53,20 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="RequestHandlerTracerExtension.cs" />
+    <Compile Include="Handlers\CallingContext.cs" />
+    <Compile Include="Handlers\HandlerFunc.cs" />
+    <Compile Include="Handlers\MatchingFunc.cs" />
     <Compile Include="Handlers\MatchingResult.cs" />
     <Compile Include="Handlers\RequestHandler.cs" />
     <Compile Include="IRequestHandler.cs" />
+    <Compile Include="IRequestHandlerTracer.cs" />
     <Compile Include="Matchers\TheRequest.cs" />
     <Compile Include="MockHttpServer.cs" />
     <Compile Include="MockHttpServerExtension.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ResponseExtension.cs" />
+    <Compile Include="VerifyException.cs" />
     <Compile Include="WhenClause.cs" />
     <Compile Include="WithServiceClause.cs" />
   </ItemGroup>

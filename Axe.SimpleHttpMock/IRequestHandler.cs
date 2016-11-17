@@ -4,10 +4,15 @@ using System.Threading;
 
 namespace Axe.SimpleHttpMock
 {
-    public interface IRequestHandler
+    public interface IRequestHandler : IRequestHandlerTracer
     {
         bool IsMatch(HttpRequestMessage request);
+
         IDictionary<string, object> GetParameters(HttpRequestMessage request);
-        HttpResponseMessage Handle(HttpRequestMessage request, IDictionary<string, object> parameters, CancellationToken cancellationToken);
+
+        HttpResponseMessage Handle(
+            HttpRequestMessage request,
+            IDictionary<string, object> parameters,
+            CancellationToken cancellationToken);
     }
 }

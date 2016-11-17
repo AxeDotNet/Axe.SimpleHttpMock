@@ -3,17 +3,16 @@ using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Formatting;
-using System.Threading;
 using Axe.SimpleHttpMock.Handlers;
 
 namespace Axe.SimpleHttpMock
 {
-    public class WhenClause
+    class WhenClause
     {
         readonly MockHttpServer m_server;
-        readonly Func<HttpRequestMessage, MatchingResult> m_requestMatchFunc;
+        readonly MatchingFunc m_requestMatchFunc;
 
-        public WhenClause(MockHttpServer server, Func<HttpRequestMessage, MatchingResult> requestMatchFunc)
+        public WhenClause(MockHttpServer server, MatchingFunc requestMatchFunc)
         {
             if (requestMatchFunc == null)
             {
@@ -24,7 +23,7 @@ namespace Axe.SimpleHttpMock
             m_requestMatchFunc = requestMatchFunc;
         }
 
-        public MockHttpServer Response(Func<HttpRequestMessage, IDictionary<string, object>, CancellationToken, HttpResponseMessage> responseFunc)
+        public MockHttpServer Response(HandlerFunc responseFunc)
         {
             if (responseFunc == null)
             {

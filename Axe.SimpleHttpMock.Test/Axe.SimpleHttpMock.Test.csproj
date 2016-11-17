@@ -68,7 +68,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DelegatedRequestHandler.cs" />
     <Compile Include="ExtensionFacts\DelegatedWhenClauseFacts.cs" />
     <Compile Include="ExtensionFacts\UriTemplateMatcherFacts.cs" />
     <Compile Include="ExtensionFacts\WithServiceFacts.cs" />

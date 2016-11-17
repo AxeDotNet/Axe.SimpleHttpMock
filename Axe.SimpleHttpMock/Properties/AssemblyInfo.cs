@@ -1,4 +1,5 @@
 ﻿using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 [assembly: AssemblyTitle("Axe.SimpleHttpMock")]
@@ -15,3 +16,4 @@ using System.Runtime.InteropServices;
 
 [assembly: AssemblyVersion("0.1.4.1")]
 [assembly: AssemblyFileVersion("0.1.0.0")]
+[assembly: InternalsVisibleTo("Axe.SimpleHttpMock.Test")]

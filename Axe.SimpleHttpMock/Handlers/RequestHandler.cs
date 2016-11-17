@@ -7,12 +7,11 @@ namespace Axe.SimpleHttpMock.Handlers
 {
     public class RequestHandler : IRequestHandler
     {
-        readonly Func<HttpRequestMessage, IDictionary<string, object>, CancellationToken, HttpResponseMessage> m_handleFunc;
-        readonly Func<HttpRequestMessage, MatchingResult> m_matcher;
+        readonly HandlerFunc m_handleFunc;
+        readonly MatchingFunc m_matcher;
+        readonly List<CallingContext> m_callingHistories = new List<CallingContext>(); 
 
-        internal RequestHandler(
-            Func<HttpRequestMessage, MatchingResult> matcher,
-            Func<HttpRequestMessage, IDictionary<string, object>, CancellationToken, HttpResponseMessage> handleFunc)
+        internal RequestHandler(MatchingFunc matcher, HandlerFunc handleFunc, string name = null)
         {
             if (handleFunc == null)
             {
@@ -26,6 +25,7 @@ namespace Axe.SimpleHttpMock.Handlers
 
             m_handleFunc = handleFunc;
             m_matcher = matcher;
+            Name = name;
         }
 
         public bool IsMatch(HttpRequestMessage request)
@@ -38,9 +38,17 @@ namespace Axe.SimpleHttpMock.Handlers
             return m_matcher(request).Parameters;
         }
 
-        public HttpResponseMessage Handle(HttpRequestMessage request, IDictionary<string, object> parameters, CancellationToken cancellationToken)
+        public HttpResponseMessage Handle(
+            HttpRequestMessage request,
+            IDictionary<string, object> parameters,
+            CancellationToken cancellationToken)
         {
-            return m_handleFunc(request, (dynamic)parameters, cancellationToken);
+            m_callingHistories.Add(new CallingContext(request, parameters));
+            return m_handleFunc(request, parameters, cancellationToken);
         }
+
+        public string Name { get; }
+
+        public IReadOnlyCollection<CallingContext> CallingHistories => m_callingHistories.AsReadOnly();
     }
 }

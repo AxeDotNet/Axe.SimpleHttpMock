@@ -8,7 +8,9 @@ namespace Axe.SimpleHttpMock.Handlers
     {
         public bool IsMatch { get; }
         public IDictionary<string, object> Parameters { get; }
-        static readonly Dictionary<string, object> emptyDictionary = new Dictionary<string, object>();
+
+        static readonly Dictionary<string, object> emptyDictionary =
+            new Dictionary<string, object>();
 
         public MatchingResult(bool isMatch, IEnumerable<KeyValuePair<string, object>> parameters)
         {
@@ -16,14 +18,18 @@ namespace Axe.SimpleHttpMock.Handlers
             Parameters = CreateParameters(parameters);
         }
 
-        IDictionary<string, object> CreateParameters(IEnumerable<KeyValuePair<string, object>> parameters)
+        IDictionary<string, object> CreateParameters(
+            IEnumerable<KeyValuePair<string, object>> parameters)
         {
             if (parameters == null)
             {
                 return emptyDictionary;
             }
 
-            return parameters.ToDictionary(o => o.Key, o => o.Value, StringComparer.InvariantCultureIgnoreCase);
+            return parameters.ToDictionary(
+                o => o.Key,
+                o => o.Value,
+                StringComparer.InvariantCultureIgnoreCase);
         }
 
         public static implicit operator bool(MatchingResult result)

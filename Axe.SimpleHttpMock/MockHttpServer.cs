@@ -10,10 +10,15 @@ namespace Axe.SimpleHttpMock
     public class MockHttpServer : HttpMessageHandler
     {
         readonly List<IRequestHandler> m_handlers = new List<IRequestHandler>(32);
+        readonly Dictionary<string, IRequestHandler> m_namedHandlers = new Dictionary<string, IRequestHandler>(); 
 
         public void AddHandler(IRequestHandler handler)
         {
             m_handlers.Add(handler);
+            if (!string.IsNullOrEmpty(handler.Name))
+            {
+                m_namedHandlers.Add(handler.Name, handler);
+            }
         }
 
         protected override Task<HttpResponseMessage> SendAsync(
@@ -30,6 +35,11 @@ namespace Axe.SimpleHttpMock
             return Task.Factory.StartNew(
                 () => matchedHandler.Handle(request, matchedHandler.GetParameters(request), cancellationToken),
                 cancellationToken);
+        }
+
+        public IRequestHandlerTracer GetNamedRoute(string name)
+        {
+            return m_namedHandlers[name];
         }
     }
 }

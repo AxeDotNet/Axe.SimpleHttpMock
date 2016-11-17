@@ -6,13 +6,6 @@ namespace Axe.SimpleHttpMock
 {
     public static class MockHttpServerExtension
     {
-        public static WhenClause When(
-            this MockHttpServer server,
-            Func<HttpRequestMessage, MatchingResult> requestMatchFunc)
-        {
-            return new WhenClause(server, requestMatchFunc);
-        }
-
         public static WithServiceClause WithService(
             this MockHttpServer server,
             string serviceUriPrefix)

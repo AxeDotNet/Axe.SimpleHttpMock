@@ -16,8 +16,9 @@ namespace Axe.SimpleHttpMock.Test.ExtensionFacts
         public async void should_match_uri_template(string actualUri)
         {
             var mockHttpServer = new MockHttpServer();
-            mockHttpServer
-                .When(TheRequest.Is("http://www.baidu.com/user", "/login", "GET"))
+            new WhenClause(
+                mockHttpServer, 
+                TheRequest.Is("http://www.baidu.com/user", "/login", "GET"))
                 .Response(HttpStatusCode.OK);
 
             var client = new HttpClient(mockHttpServer);
@@ -34,8 +35,7 @@ namespace Axe.SimpleHttpMock.Test.ExtensionFacts
         public async void should_return_not_found_if_not_match(string actualUri)
         {
             var mockHttpServer = new MockHttpServer();
-            mockHttpServer
-                .When(TheRequest.Is("http://www.baidu.com/user", "login", "GET"))
+            new WhenClause(mockHttpServer, TheRequest.Is("http://www.baidu.com/user", "login", "GET"))
                 .Response(HttpStatusCode.OK);
 
             var client = new HttpClient(mockHttpServer);
@@ -49,8 +49,9 @@ namespace Axe.SimpleHttpMock.Test.ExtensionFacts
         {
             var mockHttpServer = new MockHttpServer();
             IDictionary<string, object> parameters = null;
-            mockHttpServer
-                .When(TheRequest.Is("http://www.baidu.com/user", "{userId}/{type}?name={name}", "GET"))
+            new WhenClause(
+                mockHttpServer,
+                TheRequest.Is("http://www.baidu.com/user", "{userId}/{type}?name={name}", "GET"))
                 .Response(p =>
                 {
                     parameters = p;
