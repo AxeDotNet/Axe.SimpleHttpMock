@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace Axe.SimpleHttpMock
 {
@@ -10,7 +11,7 @@ namespace Axe.SimpleHttpMock
 
         IDictionary<string, object> GetParameters(HttpRequestMessage request);
 
-        HttpResponseMessage Handle(
+        Task<HttpResponseMessage> HandleAsync(
             HttpRequestMessage request,
             IDictionary<string, object> parameters,
             CancellationToken cancellationToken);

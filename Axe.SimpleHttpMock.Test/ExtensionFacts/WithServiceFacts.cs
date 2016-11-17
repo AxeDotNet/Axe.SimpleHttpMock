@@ -1,7 +1,9 @@
 ﻿using System.Net;
 using System.Net.Http;
 using System.Net.Http.Formatting;
+using System.Text;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 using Xunit;
 
 namespace Axe.SimpleHttpMock.Test.ExtensionFacts
@@ -40,17 +42,30 @@ namespace Axe.SimpleHttpMock.Test.ExtensionFacts
         {
             var server = new MockHttpServer();
             server.WithService("http://www.baidu.com")
-                .Api("login", "POST", HttpStatusCode.OK, "login");
+                .Api("login", "POST",
+                    (p, r) =>
+                    {
+                        // read all the content to move stream position to end.
+                        // so that we can test if cloned request position is at
+                        // the starting point.
+                        p.Content.ReadAsStringAsync().Wait();
+                        return HttpStatusCode.OK.AsResponse();
+                    }, "login");
 
             var client = new HttpClient(server);
 
-            HttpResponseMessage response = await client.PostAsync(
-                "http://www.baidu.com/login",
-                new {username = "n", password = "p"},
-                new JsonMediaTypeFormatter());
+            var request = new HttpRequestMessage(HttpMethod.Post, "http://www.baidu.com/login")
+            {
+                Content = new StringContent(
+                    JsonConvert.SerializeObject(new { username = "n", password = "p" }), Encoding.UTF8, "application/json")
+            };
+
+            HttpResponseMessage response = await client.SendAsync(request);
+
+            request.Dispose();
 
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-
+            
             await server.GetNamedHandlerTracer("login").VerifyAnonymousRequestContentAsync(
                 new {username = string.Empty, password = string.Empty},
                 c => c.username == "n" && c.password == "p");
