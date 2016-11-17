@@ -45,8 +45,12 @@ namespace Axe.SimpleHttpMock.Handlers
             IDictionary<string, object> parameters,
             CancellationToken cancellationToken)
         {
-            HttpRequestMessage cloned = await CloneHttpRequestMessageAsync(request);
-            m_callingHistories.Add(new CallingContext(cloned, parameters));
+            if (Name != null)
+            {
+                HttpRequestMessage cloned = await CloneHttpRequestMessageAsync(request);
+                m_callingHistories.Add(new CallingContext(cloned, parameters));
+            }
+
             return m_handleFunc(request, parameters, cancellationToken);
         }
 
