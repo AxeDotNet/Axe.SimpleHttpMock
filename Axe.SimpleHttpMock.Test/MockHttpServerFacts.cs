@@ -148,19 +148,13 @@ namespace Axe.SimpleHttpMock.Test
         }
         
         [Fact]
-        public async Task should_handle_by_first_matched_handler()
+        public async Task should_handle_by_latest_matched_handler()
         {
             var server = new MockHttpServer();
-
-            const string expectedResponseMessage = "First handler response";
-            var expectedResponse = new HttpResponseMessage(HttpStatusCode.OK)
-            {
-                Content = new StringContent(expectedResponseMessage)
-            };
-
+            
             server.AddHandler(new RequestHandler(
                 _ => true,
-                (r, p, c) => expectedResponse,
+                (r, p, c) => new HttpResponseMessage(HttpStatusCode.OK), 
                 null));
             server.AddHandler(new RequestHandler(
                 _ => true,
@@ -170,8 +164,7 @@ namespace Axe.SimpleHttpMock.Test
             HttpClient httpClient = CreateClient(server);
             HttpResponseMessage response = await httpClient.GetAsync("http://uri.that.not.matches");
 
-            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-            Assert.Equal(expectedResponse, response);
+            Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
         }
 
         [Fact]
@@ -186,8 +179,8 @@ namespace Axe.SimpleHttpMock.Test
             HttpResponseMessage response = await client.GetAsync("http://www.base.com/user/account");
 
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-            server.GetNamedHandlerTracer("route 1").VerifyHasBeenCalled();
-            server.GetNamedHandlerTracer("route 2").VerifyNotCalled();
+            server.GetNamedHandlerTracer("route 2").VerifyHasBeenCalled();
+            server.GetNamedHandlerTracer("route 1").VerifyNotCalled();
         }
 
         [Fact]

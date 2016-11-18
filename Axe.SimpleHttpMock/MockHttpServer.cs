@@ -25,7 +25,7 @@ namespace Axe.SimpleHttpMock
             HttpRequestMessage request,
             CancellationToken cancellationToken)
         {
-            IRequestHandler matchedHandler = m_handlers.FirstOrDefault(m => m.IsMatch(request));
+            IRequestHandler matchedHandler = m_handlers.LastOrDefault(m => m.IsMatch(request));
             if (matchedHandler == null)
             {
                 return Task.Factory.StartNew(
