@@ -71,12 +71,17 @@ namespace Axe.SimpleHttpMock.Test
             string serviceUri, string route, string requestUri)
         {
             var server = new MockHttpServer();
-            server.WithService(serviceUri).Api(route, "GET", HttpStatusCode.OK);
+            var content = new {name = "hello"};
+            server.WithService(serviceUri).Api(route, "GET", content);
 
             HttpClient client = CreateClient(server);
             HttpResponseMessage response = await client.GetAsync(requestUri);
 
             Assert.Equal(response.StatusCode, HttpStatusCode.OK);
+            var actualContent = JsonConvert.DeserializeAnonymousType(
+                await response.Content.ReadAsStringAsync(),
+                content);
+            Assert.Equal("hello", actualContent.name);
         }
 
         [Theory]

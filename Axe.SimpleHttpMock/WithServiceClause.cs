@@ -92,7 +92,11 @@ namespace Axe.SimpleHttpMock
             return this;
         }
 
-        public WithServiceClause Api(string uriTemplate, string method, HttpStatusCode statusCode, string name = null)
+        public WithServiceClause Api(
+            string uriTemplate,
+            string method,
+            HttpStatusCode statusCode,
+            string name = null)
         {
             return Api(uriTemplate, new[] {method}, statusCode, name);
         }
@@ -106,14 +110,52 @@ namespace Axe.SimpleHttpMock
             return Api(uriTemplate, methods, _ => statusCode.AsResponse(), name);
         }
 
-        public WithServiceClause Api(string uriTemplate, HttpStatusCode statusCode, string name = null)
+        public WithServiceClause Api(
+            string uriTemplate,
+            HttpStatusCode statusCode,
+            string name = null)
         {
             return Api(uriTemplate, (string[]) null, _ => statusCode.AsResponse(), name);
+        }
+
+        public WithServiceClause Api<T>(
+            string uriTemplate,
+            string method,
+            T response,
+            string name = null)
+        {
+            ThrowIfNull(response, nameof(response));
+            return Api(uriTemplate, method, _ => response.AsResponse(), name);
+        }
+
+        public WithServiceClause Api<T>(
+            string uriTemplate,
+            string[] methods,
+            T response,
+            string name = null)
+        {
+            ThrowIfNull(response, nameof(response));
+            return Api(uriTemplate, methods, _ => response.AsResponse(), name);
+        }
+
+        public WithServiceClause Api<T>(
+            string uriTemplate,
+            T response,
+            string name = null)
+        {
+            ThrowIfNull(response, nameof(response));
+            return Api(uriTemplate, _ => response.AsResponse(), name);
         }
 
         public MockHttpServer Done()
         {
             return server;
+        }
+
+        static void ThrowIfNull<T>(T value, string name)
+        {
+            if (value != null) { return; }
+            throw new ArgumentNullException(name);
         }
     }
 }
