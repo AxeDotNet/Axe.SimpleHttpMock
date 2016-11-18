@@ -14,8 +14,20 @@ namespace Axe.SimpleHttpMock
 
         public WithServiceClause(MockHttpServer server, string serviceUriPrefix)
         {
+            if (server == null)
+            {
+                throw new ArgumentNullException(nameof(server));
+            }
+
+            if (serviceUriPrefix == null)
+            {
+                throw new ArgumentNullException(nameof(serviceUriPrefix));
+            }
+
+            var uri = new Uri(serviceUriPrefix, UriKind.Absolute);
+
             this.server = server;
-            this.serviceUriPrefix = serviceUriPrefix;
+            this.serviceUriPrefix = uri.AbsoluteUri;
         }
 
         public WithServiceClause Api(
