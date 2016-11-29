@@ -52,6 +52,7 @@ namespace Axe.SimpleHttpMock
             throw new VerifyException($"The API has been called for {actualCalledCount} time(s). But your expectation is not being called.");
         }
 
+        [Obsolete]
         public static Task VerifyRequestContentAsync<T>(
             this IRequestHandlerTracer tracer,
             Func<T, bool> verifyFunc)
@@ -71,6 +72,7 @@ namespace Axe.SimpleHttpMock
             return verifyTask;
         }
 
+        [Obsolete]
         public static Task VerifyAnonymousRequestContentAsync<T>(
             this IRequestHandlerTracer tracer,
             T template,
@@ -83,23 +85,58 @@ namespace Axe.SimpleHttpMock
 
         public static Task<T> FirstOrDefaultRequestContentAsync<T>(
             this IRequestHandlerTracer tracer,
-            MediaTypeFormatter formatter)
+            MediaTypeFormatter formatter = null)
         {
-            return DeserializeContentAsync<T>(formatter, tracer.FirstOrDefaultRequestContent());
+            return DeserializeContentAsync<T>(
+                GetDefaultFormatterIfNull(formatter), 
+                tracer.FirstOrDefaultRequestContent());
+        }
+
+        public static Task<T> FirstOrDefaultRequestContentAsync<T>(
+            this IRequestHandlerTracer tracer,
+            T template,
+            MediaTypeFormatter formatter = null)
+        {
+            return FirstOrDefaultRequestContentAsync<T>(tracer, formatter);
         }
 
         public static Task<T> LastOrDefaultRequestContentAsync<T>(
             this IRequestHandlerTracer tracer,
-            MediaTypeFormatter formatter)
+            MediaTypeFormatter formatter = null)
         {
-            return DeserializeContentAsync<T>(formatter, tracer.LastOrDefaultRequestContent());
+            return DeserializeContentAsync<T>(
+                GetDefaultFormatterIfNull(formatter), 
+                tracer.LastOrDefaultRequestContent());
+        }
+
+        public static Task<T> LastOrDefaultRequestContentAsync<T>(
+            this IRequestHandlerTracer tracer,
+            T template,
+            MediaTypeFormatter formatter = null)
+        {
+            return LastOrDefaultRequestContentAsync<T>(tracer, formatter);
         }
 
         public static Task<T> SingleOrDefaultRequestContentAsync<T>(
             this IRequestHandlerTracer tracer,
-            MediaTypeFormatter formatter)
+            MediaTypeFormatter formatter = null)
         {
-            return DeserializeContentAsync<T>(formatter, tracer.SingleOrDefaultRequestContent());
+            return DeserializeContentAsync<T>(
+                GetDefaultFormatterIfNull(formatter), 
+                tracer.SingleOrDefaultRequestContent());
+        }
+
+        public static Task<T> SingleOrDefaultRequestContentAsync<T>(
+            this IRequestHandlerTracer tracer,
+            T template,
+            MediaTypeFormatter formatter = null)
+        {
+            return SingleOrDefaultRequestContentAsync<T>(tracer, formatter);
+        }
+
+        static MediaTypeFormatter GetDefaultFormatterIfNull(MediaTypeFormatter formatter)
+        {
+            return formatter ?? new JsonMediaTypeFormatter();
         }
 
         static Task<T> DeserializeContentAsync<T>(MediaTypeFormatter formatter, HttpContent content)
