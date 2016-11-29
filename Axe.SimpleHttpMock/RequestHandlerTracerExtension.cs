@@ -4,7 +4,6 @@ using System.Net.Http;
 using System.Net.Http.Formatting;
 using System.Threading.Tasks;
 using Axe.SimpleHttpMock.Handlers;
-using Newtonsoft.Json;
 
 namespace Axe.SimpleHttpMock
 {
@@ -72,6 +71,59 @@ namespace Axe.SimpleHttpMock
             return verifyTask;
         }
 
+        public static Task VerifyAnonymousRequestContentAsync<T>(
+            this IRequestHandlerTracer tracer,
+            T template,
+            Func<T, bool> verifyFunc)
+        {
+            return VerifyRequestContentAsync(
+                tracer,
+                verifyFunc);
+        }
+
+        public static Task<T> FirstOrDefaultRequestContentAsync<T>(
+            this IRequestHandlerTracer tracer,
+            MediaTypeFormatter formatter)
+        {
+            return DeserializeContentAsync<T>(formatter, tracer.FirstOrDefaultRequestContent());
+        }
+
+        public static Task<T> LastOrDefaultRequestContentAsync<T>(
+            this IRequestHandlerTracer tracer,
+            MediaTypeFormatter formatter)
+        {
+            return DeserializeContentAsync<T>(formatter, tracer.LastOrDefaultRequestContent());
+        }
+
+        public static Task<T> SingleOrDefaultRequestContentAsync<T>(
+            this IRequestHandlerTracer tracer,
+            MediaTypeFormatter formatter)
+        {
+            return DeserializeContentAsync<T>(formatter, tracer.SingleOrDefaultRequestContent());
+        }
+
+        static Task<T> DeserializeContentAsync<T>(MediaTypeFormatter formatter, HttpContent content)
+        {
+            return content == null
+                ? Task.FromResult(default(T))
+                : content.ReadAsAsync<T>(new[] {formatter});
+        }
+
+        static HttpContent FirstOrDefaultRequestContent(this IRequestHandlerTracer tracer)
+        {
+            return tracer.CallingHistories.FirstOrDefault()?.Request?.Content;
+        }
+
+        static HttpContent LastOrDefaultRequestContent(this IRequestHandlerTracer tracer)
+        {
+            return tracer.CallingHistories.LastOrDefault()?.Request?.Content;
+        }
+
+        static HttpContent SingleOrDefaultRequestContent(this IRequestHandlerTracer tracer)
+        {
+            return tracer.CallingHistories.SingleOrDefault()?.Request?.Content;
+        }
+
         static HttpContent GetSingleRequestContent(IRequestHandlerTracer tracer)
         {
             int count = tracer.CallingHistories.Count;
@@ -95,16 +147,6 @@ namespace Axe.SimpleHttpMock
                 throw new VerifyException("There is no content in this request.");
             }
             return content;
-        }
-
-        public static Task VerifyAnonymousRequestContentAsync<T>(
-            this IRequestHandlerTracer tracer,
-            T template,
-            Func<T, bool> verifyFunc)
-        {
-            return VerifyRequestContentAsync(
-                tracer,
-                verifyFunc);
         }
     }
 }
