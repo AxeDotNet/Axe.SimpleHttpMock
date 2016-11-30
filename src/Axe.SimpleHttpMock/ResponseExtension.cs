@@ -24,5 +24,15 @@ namespace Axe.SimpleHttpMock
                 Content = content
             };
         }
+
+        public static HttpResponseMessage AsResponse(
+            this HttpContent content,
+            HttpStatusCode statusCode)
+        {
+            return new HttpResponseMessage(statusCode)
+            {
+                Content = content
+            };
+        }
     }
 }

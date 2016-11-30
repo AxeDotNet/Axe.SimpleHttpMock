@@ -179,8 +179,8 @@ namespace Axe.SimpleHttpMock.Test
             HttpResponseMessage response = await client.GetAsync("http://www.base.com/user/account");
 
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-            server.GetNamedHandlerTracer("route 2").VerifyHasBeenCalled();
-            server.GetNamedHandlerTracer("route 1").VerifyNotCalled();
+            server["route 2"].VerifyHasBeenCalled();
+            server["route 1"].VerifyNotCalled();
         }
 
         [Fact]
@@ -193,9 +193,9 @@ namespace Axe.SimpleHttpMock.Test
                 (r, p, c) => HttpStatusCode.OK.AsResponse(),
                 "handlerName"));
 
-            IRequestHandlerTracer handlerTracer = server.GetNamedHandlerTracer("handlerName");
+            IRequestHandlerTracer handlerTracer = server["handlerName"];
             Assert.NotNull(handlerTracer);
-            Assert.Throws<KeyNotFoundException>(() => server.GetNamedHandlerTracer("notExist"));
+            Assert.Throws<KeyNotFoundException>(() => server["notExist"]);
         }
 
         [Fact]
@@ -207,7 +207,7 @@ namespace Axe.SimpleHttpMock.Test
                 (r, p, c) => HttpStatusCode.OK.AsResponse(),
                 "handlerName"));
 
-            IRequestHandlerTracer handlerTracer = server.GetNamedHandlerTracer("handlerName");
+            IRequestHandlerTracer handlerTracer = server["handlerName"];
             handlerTracer.VerifyNotCalled();
             Assert.Throws<VerifyException>(() => handlerTracer.VerifyHasBeenCalled());
         }
@@ -221,7 +221,7 @@ namespace Axe.SimpleHttpMock.Test
                 (r, p, c) => HttpStatusCode.OK.AsResponse(),
                 "handlerName"));
 
-            IRequestHandlerTracer handlerTracer = server.GetNamedHandlerTracer("handlerName");
+            IRequestHandlerTracer handlerTracer = server["handlerName"];
 
             HttpClient httpClient = CreateClient(server);
             await httpClient.GetAsync("http://uri.that.matches");
@@ -240,7 +240,7 @@ namespace Axe.SimpleHttpMock.Test
                 (r, p, c) => HttpStatusCode.OK.AsResponse(),
                 "handlerName"));
 
-            IRequestHandlerTracer handlerTracer = server.GetNamedHandlerTracer("handlerName");
+            IRequestHandlerTracer handlerTracer = server["handlerName"];
 
             HttpClient httpClient = CreateClient(server);
             await httpClient.GetAsync("http://uri.that.matches/");
@@ -263,7 +263,7 @@ namespace Axe.SimpleHttpMock.Test
                 (r, p, c) => HttpStatusCode.OK.AsResponse(),
                 "handlerName"));
 
-            IRequestHandlerTracer handlerTracer = server.GetNamedHandlerTracer("handlerName");
+            IRequestHandlerTracer handlerTracer = server["handlerName"];
 
             HttpClient httpClient = CreateClient(server);
             await httpClient.GetAsync("http://uri.that.matches/");
@@ -340,12 +340,12 @@ namespace Axe.SimpleHttpMock.Test
 
             await client.GetAsync("http://www.base.com/api1");
 
-            httpServer.GetNamedHandlerTracer("api1").VerifyHasBeenCalled();
+            httpServer["api1"].VerifyHasBeenCalled();
             Assert.Throws<VerifyException>(
-                () => httpServer.GetNamedHandlerTracer("api1").VerifyNotCalled());
-            httpServer.GetNamedHandlerTracer("api2").VerifyNotCalled();
+                () => httpServer["api1"].VerifyNotCalled());
+            httpServer["api2"].VerifyNotCalled();
             Assert.Throws<VerifyException>(
-                () => httpServer.GetNamedHandlerTracer("api2").VerifyHasBeenCalled());
+                () => httpServer["api2"].VerifyHasBeenCalled());
         }
 
         [Fact]
@@ -362,7 +362,7 @@ namespace Axe.SimpleHttpMock.Test
             await client.GetAsync("http://www.base.com/api1");
             await client.GetAsync("http://www.base.com/api1");
 
-            IRequestHandlerTracer tracer = httpServer.GetNamedHandlerTracer("api1");
+            IRequestHandlerTracer tracer = httpServer["api1"];
             tracer.VerifyHasBeenCalled(2);
             Assert.Throws<VerifyException>(() => tracer.VerifyHasBeenCalled(3));
         }
@@ -386,9 +386,11 @@ namespace Axe.SimpleHttpMock.Test
             response.Dispose();
             request.Dispose();
 
-            await server.GetNamedHandlerTracer("login").VerifyAnonymousRequestContentAsync(
-                new { username = string.Empty, password = string.Empty },
-                c => c.username == "n" && c.password == "p");
+            var actualRequestContent = await server["login"].SingleOrDefaultRequestContentAsync(
+                new { username = string.Empty, password = string.Empty });
+
+            Assert.Equal("n", actualRequestContent.username);
+            Assert.Equal("p", actualRequestContent.password);
         }
 
         [Fact]
@@ -406,9 +408,11 @@ namespace Axe.SimpleHttpMock.Test
                 new JsonMediaTypeFormatter());
 
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-            await server.GetNamedHandlerTracer("login").VerifyAnonymousRequestContentAsync(
-                new { username = string.Empty, password = string.Empty },
-                c => c.username == "n" && c.password == "p");
+            var actualRequestContent = await server["login"].SingleOrDefaultRequestContentAsync(
+                new { username = string.Empty, password = string.Empty });
+
+            Assert.Equal("n", actualRequestContent.username);
+            Assert.Equal("p", actualRequestContent.password);
         }
     }
 }

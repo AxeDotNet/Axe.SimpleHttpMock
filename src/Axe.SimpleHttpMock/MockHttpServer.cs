@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -38,8 +37,10 @@ namespace Axe.SimpleHttpMock
                 matchedHandler.GetParameters(request),
                 cancellationToken);
         }
-        
-        public IRequestHandlerTracer GetNamedHandlerTracer(string name)
+
+        public IRequestHandlerTracer this[string handlerName] => GetNamedHandlerTracer(handlerName);
+
+        IRequestHandlerTracer GetNamedHandlerTracer(string name)
         {
             if (m_namedHandlers.ContainsKey(name))
             {
@@ -49,7 +50,5 @@ namespace Axe.SimpleHttpMock
             throw new KeyNotFoundException(
                 $"Cannot find a handler called \"{name}\". Please make sure you have provide a name argument when you are defining an API.");
         }
-
-        public IRequestHandlerTracer this[string handlerName] => GetNamedHandlerTracer(handlerName);
     }
 }
