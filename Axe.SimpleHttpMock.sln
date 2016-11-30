@@ -1,11 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.25123.0
+VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Axe.SimpleHttpMock", "Axe.SimpleHttpMock\Axe.SimpleHttpMock.csproj", "{9EF06743-3D85-496B-A3E9-5650B12AB8B6}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Axe.SimpleHttpMock", "src\Axe.SimpleHttpMock\Axe.SimpleHttpMock.csproj", "{9EF06743-3D85-496B-A3E9-5650B12AB8B6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Axe.SimpleHttpMock.Test", "Axe.SimpleHttpMock.Test\Axe.SimpleHttpMock.Test.csproj", "{E2DB6B71-AD34-4BB5-A241-FFC2C98A6AA5}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Axe.SimpleHttpMock.Test", "test\Axe.SimpleHttpMock.Test\Axe.SimpleHttpMock.Test.csproj", "{E2DB6B71-AD34-4BB5-A241-FFC2C98A6AA5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

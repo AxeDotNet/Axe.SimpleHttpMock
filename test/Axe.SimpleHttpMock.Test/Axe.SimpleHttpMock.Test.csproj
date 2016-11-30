@@ -73,7 +73,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Axe.SimpleHttpMock\Axe.SimpleHttpMock.csproj">
+    <ProjectReference Include="..\..\src\Axe.SimpleHttpMock\Axe.SimpleHttpMock.csproj">
       <Project>{9ef06743-3d85-496b-a3e9-5650b12ab8b6}</Project>
       <Name>Axe.SimpleHttpMock</Name>
     </ProjectReference>
