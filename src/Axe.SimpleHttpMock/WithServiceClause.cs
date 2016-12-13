@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
-using Axe.SimpleHttpMock.Handlers;
-using Axe.SimpleHttpMock.Matchers;
+using Axe.SimpleHttpMock.ServerImpl;
+using Axe.SimpleHttpMock.ServerImpl.Matchers;
 
 namespace Axe.SimpleHttpMock
 {
@@ -30,6 +30,21 @@ namespace Axe.SimpleHttpMock
             this.serviceUriPrefix = uri.AbsoluteUri;
         }
 
+        void AddUriTemplateHandler(MatchingFunc requestMatchFunc, RequestHandlingFunc responseFunc, string name)
+        {
+            if (requestMatchFunc == null)
+            {
+                throw new ArgumentNullException(nameof(requestMatchFunc));
+            }
+
+            if (responseFunc == null)
+            {
+                throw new ArgumentNullException(nameof(responseFunc));
+            }
+
+            server.AddHandler(new RequestHandler(requestMatchFunc, responseFunc, name));
+        }
+
         public WithServiceClause Api(
             string uriTemplate,
             Func<HttpRequestMessage, IDictionary<string, object>, HttpResponseMessage> responseFunc,
@@ -53,11 +68,11 @@ namespace Axe.SimpleHttpMock
             Func<HttpRequestMessage, IDictionary<string, object>, HttpResponseMessage> responseFunc,
             string name = null)
         {
-            MatchingFunc matchingFunc = TheRequest.Is(
+            MatchingFunc matchingFunc = RequestTemplateMatcher.CreateMatchingDelegate(
                 serviceUriPrefix,
                 uriTemplate,
                 methods);
-            new WhenClause(server, matchingFunc, name).Response(responseFunc);
+            AddUriTemplateHandler(matchingFunc, (req, @params, c) => responseFunc(req, @params), name);
             return this;
         }
 
@@ -84,11 +99,11 @@ namespace Axe.SimpleHttpMock
             Func<IDictionary<string, object>, HttpResponseMessage> responseFunc,
             string name = null)
         {
-            MatchingFunc matchingFunc = TheRequest.Is(
+            MatchingFunc matchingFunc = RequestTemplateMatcher.CreateMatchingDelegate(
                 serviceUriPrefix,
                 uriTemplate,
                 methods);
-            new WhenClause(server, matchingFunc, name).Response(responseFunc);
+            AddUriTemplateHandler(matchingFunc, (req, @params, c) => responseFunc(@params), name);
             return this;
         }
 

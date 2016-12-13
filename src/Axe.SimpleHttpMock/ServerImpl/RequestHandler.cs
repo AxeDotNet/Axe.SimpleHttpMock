@@ -5,15 +5,15 @@ using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Axe.SimpleHttpMock.Handlers
+namespace Axe.SimpleHttpMock.ServerImpl
 {
     public class RequestHandler : IRequestHandler
     {
-        readonly HandlerFunc m_handleFunc;
+        readonly RequestHandlingFunc m_handleFunc;
         readonly MatchingFunc m_matcher;
-        readonly List<CallingContext> m_callingHistories = new List<CallingContext>(); 
+        readonly List<CallingHistoryContext> m_callingHistories = new List<CallingHistoryContext>(); 
 
-        internal RequestHandler(MatchingFunc matcher, HandlerFunc handleFunc, string name)
+        public RequestHandler(MatchingFunc matcher, RequestHandlingFunc handleFunc, string name)
         {
             if (handleFunc == null)
             {
@@ -48,7 +48,7 @@ namespace Axe.SimpleHttpMock.Handlers
             if (Name != null)
             {
                 HttpRequestMessage cloned = await CloneHttpRequestMessageAsync(request);
-                m_callingHistories.Add(new CallingContext(cloned, parameters));
+                m_callingHistories.Add(new CallingHistoryContext(cloned, parameters));
             }
 
             return m_handleFunc(request, parameters, cancellationToken);
@@ -91,6 +91,6 @@ namespace Axe.SimpleHttpMock.Handlers
 
         public string Name { get; }
 
-        public IReadOnlyCollection<CallingContext> CallingHistories => m_callingHistories.AsReadOnly();
+        public IReadOnlyCollection<CallingHistoryContext> CallingHistories => m_callingHistories.AsReadOnly();
     }
 }

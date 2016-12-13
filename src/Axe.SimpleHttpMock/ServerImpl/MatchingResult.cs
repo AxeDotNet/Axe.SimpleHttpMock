@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Axe.SimpleHttpMock.Handlers
+namespace Axe.SimpleHttpMock.ServerImpl
 {
     public class MatchingResult
     {

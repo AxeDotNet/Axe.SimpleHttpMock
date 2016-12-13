@@ -31,18 +31,18 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.4.5.11\lib\net40\Newtonsoft.Json.dll</HintPath>
+      <HintPath>..\..\packages\Newtonsoft.Json.4.5.11\lib\net40\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Net.Http.Formatting, Version=5.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.AspNet.WebApi.Client.5.0.0\lib\net45\System.Net.Http.Formatting.dll</HintPath>
+      <HintPath>..\..\packages\Microsoft.AspNet.WebApi.Client.5.0.0\lib\net45\System.Net.Http.Formatting.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System.ServiceModel" />
     <Reference Include="System.Web.Http, Version=5.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.AspNet.WebApi.Core.5.0.0\lib\net45\System.Web.Http.dll</HintPath>
+      <HintPath>..\..\packages\Microsoft.AspNet.WebApi.Core.5.0.0\lib\net45\System.Web.Http.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System.Xml.Linq" />
@@ -54,26 +54,26 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="RequestHandlerTracerExtension.cs" />
-    <Compile Include="Handlers\CallingContext.cs" />
-    <Compile Include="Handlers\HandlerFunc.cs" />
-    <Compile Include="Handlers\MatchingFunc.cs" />
-    <Compile Include="Handlers\MatchingResult.cs" />
-    <Compile Include="Handlers\RequestHandler.cs" />
+    <Compile Include="ServerImpl\CallingHistoryContext.cs" />
+    <Compile Include="ServerImpl\RequestHandlingFunc.cs" />
+    <Compile Include="ServerImpl\MatchingFunc.cs" />
+    <Compile Include="ServerImpl\MatchingResult.cs" />
+    <Compile Include="ServerImpl\RequestHandler.cs" />
     <Compile Include="IRequestHandler.cs" />
     <Compile Include="IRequestHandlerTracer.cs" />
-    <Compile Include="Matchers\TheRequest.cs" />
+    <Compile Include="ServerImpl\Matchers\RequestTemplateMatcher.cs" />
     <Compile Include="MockHttpServer.cs" />
     <Compile Include="MockHttpServerExtension.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ResponseExtension.cs" />
     <Compile Include="VerifyException.cs" />
-    <Compile Include="WhenClause.cs" />
     <Compile Include="WithServiceClause.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Axe.SimpleHttpMock.nuspec" />
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

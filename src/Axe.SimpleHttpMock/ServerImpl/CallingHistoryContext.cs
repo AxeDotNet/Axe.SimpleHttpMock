@@ -1,11 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Net.Http;
 
-namespace Axe.SimpleHttpMock.Handlers
+namespace Axe.SimpleHttpMock.ServerImpl
 {
-    public class CallingContext
+    public class CallingHistoryContext
     {
-        public CallingContext(
+        public CallingHistoryContext(
             HttpRequestMessage request, 
             IDictionary<string, object> parameters)
         {

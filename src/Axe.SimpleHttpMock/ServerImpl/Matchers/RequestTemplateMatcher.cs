@@ -2,13 +2,12 @@
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
-using Axe.SimpleHttpMock.Handlers;
 
-namespace Axe.SimpleHttpMock.Matchers
+namespace Axe.SimpleHttpMock.ServerImpl.Matchers
 {
-    public static class TheRequest
+    static class RequestTemplateMatcher
     {
-        public static MatchingFunc Is(string uriPrefix, string uriTemplate, params string[] methods)
+        public static MatchingFunc CreateMatchingDelegate(string uriPrefix, string uriTemplate, params string[] methods)
         {
             return req =>
             {
