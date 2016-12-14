@@ -68,6 +68,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Helpers\HttpResponseExtensions.cs" />
     <Compile Include="HttpServerFactBase.cs" />
     <Compile Include="MockHttpServerNamedHandlerTracerFacts.cs" />
     <Compile Include="MockHttpServerHandlerFacts.cs" />

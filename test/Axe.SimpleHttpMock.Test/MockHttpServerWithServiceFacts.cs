@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
+using Axe.SimpleHttpMock.Test.Helpers;
 using Newtonsoft.Json;
 using Xunit;
 
@@ -90,6 +91,30 @@ namespace Axe.SimpleHttpMock.Test
             HttpResponseMessage response = await client.SendAsync(request);
 
             Assert.Equal(response.StatusCode, HttpStatusCode.OK);
+        }
+
+        [Fact]
+        public async Task should_not_confuse_between_different_systems()
+        {
+            var server = new MockHttpServer();
+
+            server
+                .WithService("http://service1.com")
+                .Api("user", new {message = "from service 1"})
+                .Done()
+                .WithService("http://service2.com")
+                .Api("user", new {message = "from service 2"})
+                .Done();
+
+            HttpClient client = CreateClient(server);
+
+            HttpResponseMessage responseSvc1 = await client.GetAsync("http://service1.com/user");
+            HttpResponseMessage responseSvc2 = await client.GetAsync("http://service2.com/user");
+
+            var template = new {message = default(string)};
+
+            Assert.Equal("from service 1", (await responseSvc1.ReadAs(template)).message);
+            Assert.Equal("from service 2", (await responseSvc2.ReadAs(template)).message);
         }
 
         [Fact]
