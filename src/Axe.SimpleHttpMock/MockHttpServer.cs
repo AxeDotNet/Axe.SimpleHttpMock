@@ -10,11 +10,21 @@ namespace Axe.SimpleHttpMock
     public class MockHttpServer : HttpMessageHandler
     {
         readonly List<IRequestHandler> m_handlers = new List<IRequestHandler>(32);
+        readonly List<IRequestHandler> m_defaultHandlers = new List<IRequestHandler>();
         readonly Dictionary<string, IRequestHandler> m_namedHandlers = new Dictionary<string, IRequestHandler>(); 
 
         public void AddHandler(IRequestHandler handler)
         {
             m_handlers.Add(handler);
+            if (!string.IsNullOrEmpty(handler.Name))
+            {
+                m_namedHandlers.Add(handler.Name, handler);
+            }
+        }
+
+        public void AddDefaultHandler(IRequestHandler handler)
+        {
+            m_defaultHandlers.Add(handler);
             if (!string.IsNullOrEmpty(handler.Name))
             {
                 m_namedHandlers.Add(handler.Name, handler);
@@ -28,8 +38,11 @@ namespace Axe.SimpleHttpMock
             IRequestHandler matchedHandler = m_handlers.LastOrDefault(m => m.IsMatch(request));
             if (matchedHandler == null)
             {
-                return Task.Factory.StartNew(
-                    () => new HttpResponseMessage(HttpStatusCode.NotFound), cancellationToken);
+                matchedHandler = m_defaultHandlers.LastOrDefault(m => m.IsMatch(request));
+                if (matchedHandler == null)
+                {
+                    return Task.FromResult(new HttpResponseMessage(HttpStatusCode.NotFound));
+                }
             }
 
             return matchedHandler.HandleAsync(

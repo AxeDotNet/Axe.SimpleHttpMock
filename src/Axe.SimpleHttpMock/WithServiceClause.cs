@@ -29,8 +29,12 @@ namespace Axe.SimpleHttpMock
             this.server = server;
             this.serviceUriPrefix = uri.AbsoluteUri;
         }
-
-        void AddUriTemplateHandler(MatchingFunc requestMatchFunc, RequestHandlingFunc responseFunc, string name)
+        
+        void AddUriTemplateHandler(
+            MatchingFunc requestMatchFunc,
+            RequestHandlingFunc responseFunc,
+            string name,
+            bool defaultHandler = false)
         {
             if (requestMatchFunc == null)
             {
@@ -42,7 +46,42 @@ namespace Axe.SimpleHttpMock
                 throw new ArgumentNullException(nameof(responseFunc));
             }
 
-            server.AddHandler(new RequestHandler(requestMatchFunc, responseFunc, name));
+            if (defaultHandler)
+            {
+                server.AddDefaultHandler(new RequestHandler(requestMatchFunc, responseFunc, name));
+            }
+            else
+            {
+                server.AddHandler(new RequestHandler(requestMatchFunc, responseFunc, name));
+            }
+        }
+
+        public WithServiceClause Default(
+            Func<HttpRequestMessage, HttpResponseMessage> responseFunc, string name = null)
+        {
+            if (responseFunc == null)
+            {
+                throw new ArgumentNullException(nameof(responseFunc));
+            }
+
+            AddUriTemplateHandler(
+                req =>
+                    req.RequestUri != null &&
+                    req.RequestUri.AbsoluteUri.StartsWith(serviceUriPrefix, StringComparison.InvariantCultureIgnoreCase),
+                (req, p, c) => responseFunc(req),
+                name,
+                true);
+            return this;
+        }
+
+        public WithServiceClause Default(HttpStatusCode statusCode, string name = null)
+        {
+            return Default(req => statusCode.AsResponse(), name);
+        }
+
+        public WithServiceClause Default<T>(T content, string name = null)
+        {
+            return Default(req => content.AsResponse(), name);
         }
 
         public WithServiceClause Api(

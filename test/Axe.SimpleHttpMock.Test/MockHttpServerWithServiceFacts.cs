@@ -110,11 +110,13 @@ namespace Axe.SimpleHttpMock.Test
 
             HttpResponseMessage responseSvc1 = await client.GetAsync("http://service1.com/user");
             HttpResponseMessage responseSvc2 = await client.GetAsync("http://service2.com/user");
+            HttpResponseMessage responseSvc3 = await client.GetAsync("http://service-not-exist.com/user");
 
             var template = new {message = default(string)};
 
             Assert.Equal("from service 1", (await responseSvc1.ReadAs(template)).message);
             Assert.Equal("from service 2", (await responseSvc2.ReadAs(template)).message);
+            Assert.Equal(HttpStatusCode.NotFound, responseSvc3.StatusCode);
         }
 
         [Fact]
