@@ -7,13 +7,35 @@ using System.Threading.Tasks;
 
 namespace Axe.SimpleHttpMock.ServerImpl
 {
-    public class RequestHandler : IRequestHandler
+    /// <summary>
+    /// Represents a delegated request handler. This is a good start if you want to
+    /// implement your own request handler.
+    /// </summary>
+    public class DelegatedRequestHandler : IRequestHandler
     {
         readonly RequestHandlingFunc m_handleFunc;
         readonly MatchingFunc m_matcher;
         readonly List<CallingHistoryContext> m_callingHistories = new List<CallingHistoryContext>(); 
 
-        public RequestHandler(MatchingFunc matcher, RequestHandlingFunc handleFunc, string name)
+        /// <summary>
+        /// Create a <see cref="DelegatedRequestHandler"/> instance.
+        /// </summary>
+        /// <param name="matcher">
+        /// A delegate determines that if current handler can handle the HTTP request message.
+        /// </param>
+        /// <param name="handleFunc">
+        /// A delegate to create and return HTTP response message. Usually this is defined by
+        /// test writer.
+        /// </param>
+        /// <param name="name">
+        /// The name of the handler. This parameter is very helpful if you want to track
+        /// the calling history.
+        /// </param>
+        /// <exception cref="ArgumentNullException">
+        /// The <paramref name="matcher"/> is <c>null</c> or the <paramref name="handleFunc"/>
+        /// is <c>null</c>.
+        /// </exception>
+        public DelegatedRequestHandler(MatchingFunc matcher, RequestHandlingFunc handleFunc, string name)
         {
             if (handleFunc == null)
             {
@@ -30,16 +52,30 @@ namespace Axe.SimpleHttpMock.ServerImpl
             Name = name;
         }
 
+        /// <summary>
+        /// Using user defined delegate to check if current handler can handle certain request.
+        /// </summary>
+        /// <param name="request">The actual HTTP request message.</param>
+        /// <returns>
+        /// <c>true</c>, if the request can be handled. Otherwise, <c>false</c>.
+        /// </returns>
         public bool IsMatch(HttpRequestMessage request)
         {
             return m_matcher(request);
         }
 
+        /// <summary>
+        /// Using user defined delegate to get the binded parameters.
+        /// </summary>
+        /// <param name="request">The actual HTTP request message.</param>
+        /// <returns>
+        /// The binded parameters.
+        /// </returns>
         public IDictionary<string, object> GetParameters(HttpRequestMessage request)
         {
             return m_matcher(request).Parameters;
         }
-
+        
         public async Task<HttpResponseMessage> HandleAsync(
             HttpRequestMessage request,
             IDictionary<string, object> parameters,

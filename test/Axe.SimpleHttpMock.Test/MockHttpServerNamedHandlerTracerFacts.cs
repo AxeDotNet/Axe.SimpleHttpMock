@@ -18,7 +18,7 @@ namespace Axe.SimpleHttpMock.Test
         {
             var server = new MockHttpServer();
 
-            server.AddHandler(new RequestHandler(
+            server.AddHandler(new DelegatedRequestHandler(
                 _ => true,
                 (r, p, c) => HttpStatusCode.OK.AsResponse(),
                 "handlerName"));
@@ -32,7 +32,7 @@ namespace Axe.SimpleHttpMock.Test
         public void should_be_able_to_verify_not_called_from_named_handler_tracer()
         {
             var server = new MockHttpServer();
-            server.AddHandler(new RequestHandler(
+            server.AddHandler(new DelegatedRequestHandler(
                 _ => true,
                 (r, p, c) => HttpStatusCode.OK.AsResponse(),
                 "handlerName"));
@@ -46,7 +46,7 @@ namespace Axe.SimpleHttpMock.Test
         public async Task should_be_able_to_verify_called_from_named_handler_tracer()
         {
             var server = new MockHttpServer();
-            server.AddHandler(new RequestHandler(
+            server.AddHandler(new DelegatedRequestHandler(
                 _ => true,
                 (r, p, c) => HttpStatusCode.OK.AsResponse(),
                 "handlerName"));
@@ -65,7 +65,7 @@ namespace Axe.SimpleHttpMock.Test
         public async Task should_get_request_from_calling_history_of_named_handler_tracer()
         {
             var server = new MockHttpServer();
-            server.AddHandler(new RequestHandler(
+            server.AddHandler(new DelegatedRequestHandler(
                 _ => true,
                 (r, p, c) => HttpStatusCode.OK.AsResponse(),
                 "handlerName"));
@@ -84,7 +84,7 @@ namespace Axe.SimpleHttpMock.Test
         public async Task should_verify_binded_parameters_from_named_handler_tracer()
         {
             var server = new MockHttpServer();
-            server.AddHandler(new RequestHandler(
+            server.AddHandler(new DelegatedRequestHandler(
                 _ => new MatchingResult(true, new List<KeyValuePair<string, object>>
                 {
                     new KeyValuePair<string, object>("p1", "v1"),

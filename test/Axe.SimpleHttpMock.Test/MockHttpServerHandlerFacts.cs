@@ -25,7 +25,7 @@ namespace Axe.SimpleHttpMock.Test
         {
             var server = new MockHttpServer();
 
-            server.AddHandler(new RequestHandler(
+            server.AddHandler(new DelegatedRequestHandler(
                 _ => false,
                 (r, p, c) => new HttpResponseMessage(HttpStatusCode.OK),
                 null));
@@ -50,7 +50,7 @@ namespace Axe.SimpleHttpMock.Test
             var server = new MockHttpServer();
 
             var expectedResponse = new HttpResponseMessage(HttpStatusCode.OK);
-            server.AddHandler(new RequestHandler(
+            server.AddHandler(new DelegatedRequestHandler(
                 _ => true,
                 (r, p, c) => expectedResponse,
                 null));
@@ -66,11 +66,11 @@ namespace Axe.SimpleHttpMock.Test
         {
             var server = new MockHttpServer();
 
-            server.AddHandler(new RequestHandler(
+            server.AddHandler(new DelegatedRequestHandler(
                 _ => true,
                 (r, p, c) => new HttpResponseMessage(HttpStatusCode.OK),
                 null));
-            server.AddHandler(new RequestHandler(
+            server.AddHandler(new DelegatedRequestHandler(
                 _ => true,
                 (r, p, c) => new HttpResponseMessage(HttpStatusCode.BadRequest),
                 null));

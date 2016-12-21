@@ -48,11 +48,11 @@ namespace Axe.SimpleHttpMock
 
             if (defaultHandler)
             {
-                server.AddDefaultHandler(new RequestHandler(requestMatchFunc, responseFunc, name));
+                server.AddDefaultHandler(new DelegatedRequestHandler(requestMatchFunc, responseFunc, name));
             }
             else
             {
-                server.AddHandler(new RequestHandler(requestMatchFunc, responseFunc, name));
+                server.AddHandler(new DelegatedRequestHandler(requestMatchFunc, responseFunc, name));
             }
         }
 

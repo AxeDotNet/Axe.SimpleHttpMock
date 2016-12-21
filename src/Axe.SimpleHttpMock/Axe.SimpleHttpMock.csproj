@@ -20,6 +20,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Debug\Axe.SimpleHttpMock.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -58,7 +59,7 @@
     <Compile Include="ServerImpl\RequestHandlingFunc.cs" />
     <Compile Include="ServerImpl\MatchingFunc.cs" />
     <Compile Include="ServerImpl\MatchingResult.cs" />
-    <Compile Include="ServerImpl\RequestHandler.cs" />
+    <Compile Include="ServerImpl\DelegatedRequestHandler.cs" />
     <Compile Include="IRequestHandler.cs" />
     <Compile Include="IRequestHandlerTracer.cs" />
     <Compile Include="ServerImpl\Matchers\RequestTemplateMatcher.cs" />
