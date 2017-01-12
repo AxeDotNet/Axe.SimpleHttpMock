@@ -233,6 +233,45 @@ namespace Axe.SimpleHttpMock.Test
                 w.Api(uri, content, name));
         }
 
+        [Fact]
+        public async Task should_distinguish_sub_applications()
+        {
+            var server = new MockHttpServer();
+            server.WithService("http://domain.com/apps/app1")
+                .Api("user", HttpStatusCode.OK);
+
+            server.WithService("http://domain.com/apps/app2")
+                .Api("user", HttpStatusCode.Accepted);
+
+            HttpClient client = CreateClient(server);
+
+            HttpResponseMessage responseApp1 = await client.GetAsync("http://domain.com/apps/app1/user");
+            HttpResponseMessage responseApp2 = await client.GetAsync("http://domain.com/apps/app2/user");
+
+            Assert.Equal(HttpStatusCode.OK, responseApp1.StatusCode);
+            Assert.Equal(HttpStatusCode.Accepted, responseApp2.StatusCode);
+        }
+
+        [Fact]
+        public async Task should_get_lastest_matched_defintion_even_at_different_level()
+        {
+            var server = new MockHttpServer();
+            server.WithService("http://domain.com/apps/app1")
+                .Api("/", HttpStatusCode.BadRequest)
+                .Api("user", HttpStatusCode.OK);
+
+            HttpClient client = CreateClient(server);
+            HttpResponseMessage responseWithoutOverride = await client.GetAsync("http://domain.com/apps/app1");
+            Assert.Equal(HttpStatusCode.BadRequest, responseWithoutOverride.StatusCode);
+
+            server.WithService("http://domain.com/apps")
+                .Api("{appName}", HttpStatusCode.Accepted);
+            
+            HttpResponseMessage response = await client.GetAsync("http://domain.com/apps/app1");
+
+            Assert.Equal(HttpStatusCode.Accepted, response.StatusCode);
+        }
+
         delegate void ApiTestSetup(
             WithServiceClause withServiceClause,
             string uriTemplate,

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Net.Http;
@@ -15,7 +16,7 @@ namespace Axe.SimpleHttpMock.ServerImpl
     {
         readonly RequestHandlingFunc m_handleFunc;
         readonly MatchingFunc m_matcher;
-        readonly List<CallingHistoryContext> m_callingHistories = new List<CallingHistoryContext>(); 
+        readonly ConcurrentQueue<CallingHistoryContext> m_callingHistories = new ConcurrentQueue<CallingHistoryContext>(); 
 
         /// <summary>
         /// Create a <see cref="DelegatedRequestHandler"/> instance.
@@ -84,7 +85,7 @@ namespace Axe.SimpleHttpMock.ServerImpl
             if (Name != null)
             {
                 HttpRequestMessage cloned = await CloneHttpRequestMessageAsync(request);
-                m_callingHistories.Add(new CallingHistoryContext(cloned, parameters));
+                m_callingHistories.Enqueue(new CallingHistoryContext(cloned, parameters));
             }
 
             return m_handleFunc(request, parameters, cancellationToken);
@@ -127,6 +128,6 @@ namespace Axe.SimpleHttpMock.ServerImpl
 
         public string Name { get; }
 
-        public IReadOnlyCollection<CallingHistoryContext> CallingHistories => m_callingHistories.AsReadOnly();
+        public IReadOnlyCollection<CallingHistoryContext> CallingHistories => m_callingHistories.ToArray();
     }
 }
