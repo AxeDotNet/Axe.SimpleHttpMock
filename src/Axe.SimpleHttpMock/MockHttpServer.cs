@@ -8,6 +8,9 @@ using System.Threading.Tasks;
 
 namespace Axe.SimpleHttpMock
 {
+    /// <summary>
+    /// The mocked http server representing all external systems.
+    /// </summary>
     public class MockHttpServer : HttpMessageHandler
     {
         readonly List<IRequestHandler> m_handlers = new List<IRequestHandler>(32);
@@ -15,6 +18,14 @@ namespace Axe.SimpleHttpMock
         readonly Dictionary<string, IRequestHandler> m_namedHandlers = new Dictionary<string, IRequestHandler>();
         ConcurrentBag<object> m_diagnosticLogs;
 
+        /// <summary>
+        /// Add a http handler to the mocked server.
+        /// </summary>
+        /// <param name="handler">The handler that will accept certain messages and generate desired response.</param>
+        /// <remarks>
+        /// We do not want to make things complex so we introduce no scoring machinism to decide which request handler
+        /// to pick. But we will pick the latest matched handler.
+        /// </remarks>
         public void AddHandler(IRequestHandler handler)
         {
             m_handlers.Add(handler);
@@ -24,6 +35,11 @@ namespace Axe.SimpleHttpMock
             }
         }
 
+        /// <summary>
+        /// Add a default handler to mocked server. The default handler will be called if no handler matches the
+        /// request.
+        /// </summary>
+        /// <param name="handler">The default request handler.</param>
         public void AddDefaultHandler(IRequestHandler handler)
         {
             m_defaultHandlers.Add(handler);
@@ -32,7 +48,7 @@ namespace Axe.SimpleHttpMock
                 m_namedHandlers.Add(handler.Name, handler);
             }
         }
-
+        
         protected override Task<HttpResponseMessage> SendAsync(
             HttpRequestMessage request,
             CancellationToken cancellationToken)

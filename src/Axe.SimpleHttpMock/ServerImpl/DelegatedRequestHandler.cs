@@ -76,7 +76,17 @@ namespace Axe.SimpleHttpMock.ServerImpl
         {
             return m_matcher(request).Parameters;
         }
-        
+
+        /// <summary>
+        /// Accept the request and parameters and creating <see cref="HttpResponseMessage"/>
+        /// using the customized <see cref="RequestHandlingFunc"/>.
+        /// </summary>
+        /// <param name="request">The request message received.</param>
+        /// <param name="parameters">The parameters that are extracted from the request message.</param>
+        /// <param name="cancellationToken">The cancellation token passed to the async method.</param>
+        /// <returns>
+        /// The desired response message created by customized <see cref="RequestHandlingFunc"/>
+        /// </returns>
         public async Task<HttpResponseMessage> HandleAsync(
             HttpRequestMessage request,
             IDictionary<string, object> parameters,
@@ -91,7 +101,7 @@ namespace Axe.SimpleHttpMock.ServerImpl
             return m_handleFunc(request, parameters, cancellationToken);
         }
 
-        public static async Task<HttpRequestMessage> CloneHttpRequestMessageAsync(HttpRequestMessage req)
+        static async Task<HttpRequestMessage> CloneHttpRequestMessageAsync(HttpRequestMessage req)
         {
             var clone = new HttpRequestMessage(req.Method, req.RequestUri);
             
@@ -126,8 +136,16 @@ namespace Axe.SimpleHttpMock.ServerImpl
             return clone;
         }
 
+        /// <summary>
+        /// The name of the handler. Please see <see cref="IRequestHandlerTracer.Name"/>
+        /// for more information.
+        /// </summary>
         public string Name { get; }
 
+        /// <summary>
+        /// Get the calling history of the handler. Please see <see cref="IRequestHandlerTracer.CallingHistories"/>
+        /// for more information.
+        /// </summary>
         public IReadOnlyCollection<CallingHistoryContext> CallingHistories => m_callingHistories.ToArray();
     }
 }
