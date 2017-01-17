@@ -1,10 +1,10 @@
-﻿using System.Collections.Concurrent;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 
 namespace Axe.SimpleHttpMock
 {
@@ -16,7 +16,6 @@ namespace Axe.SimpleHttpMock
         readonly List<IRequestHandler> m_handlers = new List<IRequestHandler>(32);
         readonly List<IRequestHandler> m_defaultHandlers = new List<IRequestHandler>();
         readonly Dictionary<string, IRequestHandler> m_namedHandlers = new Dictionary<string, IRequestHandler>();
-        ConcurrentBag<object> m_diagnosticLogs;
 
         /// <summary>
         /// Add a http handler to the mocked server.
@@ -56,53 +55,31 @@ namespace Axe.SimpleHttpMock
             IRequestHandler matchedHandler = m_handlers.LastOrDefault(m => m.IsMatch(request));
             if (matchedHandler == null)
             {
+                string requestLog = JsonConvert.SerializeObject(new
+                {
+                    Uri = request.RequestUri.ToString(),
+                    Method = request.Method.Method
+                });
+                Logger.Log($"[Mock Server] Cannot find matched handler for request {requestLog}");
+
                 matchedHandler = m_defaultHandlers.LastOrDefault(m => m.IsMatch(request));
                 if (matchedHandler == null)
                 {
-                    LogDiagnosticInformation(new
-                    {
-                        request = request.RequestUri,
-                        method = request.Method,
-                        message = "No handler can handle this request."
-                    });
+                    Logger.Log($"[Mock Server] Cannot find default handler for request {requestLog}");
                     return Task.FromResult(new HttpResponseMessage(HttpStatusCode.NotFound));
                 }
             }
 
+            Logger.Log($"[Mock Server] matched handler found with name '{matchedHandler.Name}'");
             return matchedHandler.HandleAsync(
                 request,
                 matchedHandler.GetParameters(request),
                 cancellationToken);
         }
 
-        void LogDiagnosticInformation(object log)
-        {
-            if (!EnableDiagnostic) { return; }
-            m_diagnosticLogs.Add(log);
-        }
-
         public IRequestHandlerTracer this[string handlerName] => GetNamedHandlerTracer(handlerName);
 
-        public bool EnableDiagnostic
-        {
-            get { return m_diagnosticLogs != null; }
-            set
-            {
-                if (value)
-                {
-                    if (m_diagnosticLogs == null)
-                    {
-                        m_diagnosticLogs = new ConcurrentBag<object>();
-                    }
-                }
-                else
-                {
-                    m_diagnosticLogs = null;
-                }
-            }
-        }
-
-        public object[] DiagnosticInformation => m_diagnosticLogs.ToArray();
+        public IServerLogger Logger { get; set; } = new DummyLogger();
 
         IRequestHandlerTracer GetNamedHandlerTracer(string name)
         {

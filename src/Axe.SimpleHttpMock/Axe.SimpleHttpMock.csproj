@@ -54,6 +54,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="IServerLogger.cs" />
     <Compile Include="RequestHandlerTracerExtension.cs" />
     <Compile Include="ServerImpl\CallingHistoryContext.cs" />
     <Compile Include="ServerImpl\RequestHandlingFunc.cs" />
