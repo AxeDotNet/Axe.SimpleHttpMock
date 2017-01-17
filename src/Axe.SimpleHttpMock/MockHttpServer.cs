@@ -4,7 +4,6 @@ using System.Net;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
 
 namespace Axe.SimpleHttpMock
 {
@@ -48,33 +47,32 @@ namespace Axe.SimpleHttpMock
             }
         }
         
-        protected override Task<HttpResponseMessage> SendAsync(
+        protected override async Task<HttpResponseMessage> SendAsync(
             HttpRequestMessage request,
             CancellationToken cancellationToken)
         {
+            string requestBriefing = $"{request.Method.Method} {request.RequestUri}";
+            Logger.Log($"[Mock Server] Receiving request: {requestBriefing}");
             IRequestHandler matchedHandler = m_handlers.LastOrDefault(m => m.IsMatch(request));
             if (matchedHandler == null)
             {
-                string requestLog = JsonConvert.SerializeObject(new
-                {
-                    Uri = request.RequestUri.ToString(),
-                    Method = request.Method.Method
-                });
-                Logger.Log($"[Mock Server] Cannot find matched handler for request {requestLog}");
+                Logger.Log($"[Mock Server] Cannot find matched handler for request: {requestBriefing}");
 
                 matchedHandler = m_defaultHandlers.LastOrDefault(m => m.IsMatch(request));
                 if (matchedHandler == null)
                 {
-                    Logger.Log($"[Mock Server] Cannot find default handler for request {requestLog}");
-                    return Task.FromResult(new HttpResponseMessage(HttpStatusCode.NotFound));
+                    Logger.Log($"[Mock Server] Cannot find default handler for request: {requestBriefing}");
+                    return new HttpResponseMessage(HttpStatusCode.NotFound);
                 }
             }
 
-            Logger.Log($"[Mock Server] matched handler found with name '{matchedHandler.Name}'");
-            return matchedHandler.HandleAsync(
+            Logger.Log($"[Mock Server] Matched handler found with name '{matchedHandler.Name}'");
+            HttpResponseMessage response = await matchedHandler.HandleAsync(
                 request,
                 matchedHandler.GetParameters(request),
                 cancellationToken);
+            Logger.Log($"[Mock Server] The request '{requestBriefing}' generates response '{response.StatusCode}'");
+            return response;
         }
 
         public IRequestHandlerTracer this[string handlerName] => GetNamedHandlerTracer(handlerName);
