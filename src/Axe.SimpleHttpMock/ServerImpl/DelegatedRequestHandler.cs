@@ -94,7 +94,7 @@ namespace Axe.SimpleHttpMock.ServerImpl
         {
             if (Name != null)
             {
-                HttpRequestMessage cloned = await CloneHttpRequestMessageAsync(request);
+                HttpRequestMessage cloned = await CloneHttpRequestMessageAsync(request).ConfigureAwait(false);
                 m_callingHistories.Enqueue(new CallingHistoryContext(cloned, parameters));
             }
 

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -51,6 +52,11 @@ namespace Axe.SimpleHttpMock
             HttpRequestMessage request,
             CancellationToken cancellationToken)
         {
+            if (request == null)
+            {
+                throw new ArgumentNullException(nameof(request));
+            }
+
             string requestBriefing = $"{request.Method.Method} {request.RequestUri}";
             Logger.Log($"[Mock Server] Receiving request: {requestBriefing}");
             IRequestHandler matchedHandler = m_handlers.LastOrDefault(m => m.IsMatch(request));
@@ -70,7 +76,7 @@ namespace Axe.SimpleHttpMock
             HttpResponseMessage response = await matchedHandler.HandleAsync(
                 request,
                 matchedHandler.GetParameters(request),
-                cancellationToken);
+                cancellationToken).ConfigureAwait(false);
             Logger.Log($"[Mock Server] The request '{requestBriefing}' generates response '{response.StatusCode}'");
             return response;
         }
