@@ -5,6 +5,7 @@ using System.Net;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using Axe.SimpleHttpMock.ServerImpl;
 
 namespace Axe.SimpleHttpMock
 {
@@ -16,6 +17,7 @@ namespace Axe.SimpleHttpMock
         readonly List<IRequestHandler> m_handlers = new List<IRequestHandler>(32);
         readonly List<IRequestHandler> m_defaultHandlers = new List<IRequestHandler>();
         readonly Dictionary<string, IRequestHandler> m_namedHandlers = new Dictionary<string, IRequestHandler>();
+        IServerLogger logger = new DummyLogger();
 
         /// <summary>
         /// Add a http handler to the mocked server.
@@ -48,6 +50,13 @@ namespace Axe.SimpleHttpMock
             }
         }
         
+        /// <summary>
+        /// Consume the received request asynchronously using the registered handlers. if no handler is available
+        /// a 404 response will be returned.
+        /// </summary>
+        /// <param name="request">The request received.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns>The generated response.</returns>
         protected override async Task<HttpResponseMessage> SendAsync(
             HttpRequestMessage request,
             CancellationToken cancellationToken)
@@ -59,16 +68,18 @@ namespace Axe.SimpleHttpMock
 
             string requestBriefing = $"{request.Method.Method} {request.RequestUri}";
             Logger.Log($"[Mock Server] Receiving request: {requestBriefing}");
+
             IRequestHandler matchedHandler = m_handlers.LastOrDefault(m => m.IsMatch(request));
             if (matchedHandler == null)
             {
-                Logger.Log($"[Mock Server] Cannot find matched handler for request: {requestBriefing}");
-
                 matchedHandler = m_defaultHandlers.LastOrDefault(m => m.IsMatch(request));
                 if (matchedHandler == null)
                 {
-                    Logger.Log($"[Mock Server] Cannot find default handler for request: {requestBriefing}");
-                    return new HttpResponseMessage(HttpStatusCode.NotFound);
+                    Logger.Log($"[Mock Server] Cannot find matched handler for request: {requestBriefing}");
+                    return new HttpResponseMessage(HttpStatusCode.NotFound)
+                    {
+                        Content = new StringContent($"No mock-handler available for current request {requestBriefing}")
+                    };
                 }
             }
 
@@ -76,14 +87,42 @@ namespace Axe.SimpleHttpMock
             HttpResponseMessage response = await matchedHandler.HandleAsync(
                 request,
                 matchedHandler.GetParameters(request),
-                cancellationToken).ConfigureAwait(false);
+                cancellationToken,
+                Logger).ConfigureAwait(false);
             Logger.Log($"[Mock Server] The request '{requestBriefing}' generates response '{response.StatusCode}'");
             return response;
         }
 
+        /// <summary>
+        /// Get named handler to retrive calling history or do some verification.
+        /// </summary>
+        /// <param name="handlerName">The name of the handler</param>
+        /// <returns>The tracing information of the named handler.</returns>
+        /// <exception cref="KeyNotFoundException">
+        /// The <paramref name="handlerName"/> cannot be found in the registered handlers.
+        /// </exception>
         public IRequestHandlerTracer this[string handlerName] => GetNamedHandlerTracer(handlerName);
 
-        public IServerLogger Logger { get; set; } = new DummyLogger();
+        /// <summary>
+        /// Get or set the logger for current mocked http server. You can get some detailed information which
+        /// may of help for diagnostic.
+        /// </summary>
+        /// <exception cref="ArgumentNullException">
+        /// The logger specified is <c>null</c>.
+        /// </exception>
+        public IServerLogger Logger
+        {
+            get { return logger; }
+            set
+            {
+                if (value == null)
+                {
+                    throw new ArgumentNullException(nameof(value));
+                }
+
+                logger = value;
+            }
+        }
 
         IRequestHandlerTracer GetNamedHandlerTracer(string name)
         {

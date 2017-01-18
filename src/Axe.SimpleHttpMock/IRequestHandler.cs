@@ -55,10 +55,14 @@ namespace Axe.SimpleHttpMock
         /// <param name="cancellationToken">
         /// The cancellation token passed to the async method.
         /// </param>
+        /// <param name="logger">
+        /// The verbose logger.
+        /// </param>
         /// <returns>The generated http response message.</returns>
         Task<HttpResponseMessage> HandleAsync(
             HttpRequestMessage request,
             IDictionary<string, object> parameters,
-            CancellationToken cancellationToken);
+            CancellationToken cancellationToken,
+            IServerLogger logger = null);
     }
 }

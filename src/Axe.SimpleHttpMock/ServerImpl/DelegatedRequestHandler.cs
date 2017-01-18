@@ -2,6 +2,7 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
+using System.Net;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
@@ -84,21 +85,37 @@ namespace Axe.SimpleHttpMock.ServerImpl
         /// <param name="request">The request message received.</param>
         /// <param name="parameters">The parameters that are extracted from the request message.</param>
         /// <param name="cancellationToken">The cancellation token passed to the async method.</param>
+        /// <param name="logger">The verbose logger.</param>
         /// <returns>
         /// The desired response message created by customized <see cref="RequestHandlingFunc"/>
         /// </returns>
         public async Task<HttpResponseMessage> HandleAsync(
             HttpRequestMessage request,
             IDictionary<string, object> parameters,
-            CancellationToken cancellationToken)
+            CancellationToken cancellationToken,
+            IServerLogger logger = null)
         {
+            IServerLogger actualLogger = logger ?? new DummyLogger();
+
             if (Name != null)
             {
                 HttpRequestMessage cloned = await CloneHttpRequestMessageAsync(request).ConfigureAwait(false);
+                actualLogger.Log($"[Handler] Record calling history with name '{Name}'");
                 m_callingHistories.Enqueue(new CallingHistoryContext(cloned, parameters));
             }
 
-            return m_handleFunc(request, parameters, cancellationToken);
+            try
+            {
+                return m_handleFunc(request, parameters, cancellationToken);
+            }
+            catch (Exception error)
+            {
+                actualLogger.Log($"[Handler] Unexpected error occured during handler evaluation: {error.Message}. Will return Internal Server Error");
+                return new HttpResponseMessage(HttpStatusCode.InternalServerError)
+                {
+                    Content = new StringContent(error.ToString())
+                };
+            }
         }
 
         static async Task<HttpRequestMessage> CloneHttpRequestMessageAsync(HttpRequestMessage req)

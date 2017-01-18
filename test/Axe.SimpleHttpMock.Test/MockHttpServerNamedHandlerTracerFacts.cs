@@ -101,6 +101,7 @@ namespace Axe.SimpleHttpMock.Test
             handlerTracer.VerifyBindedParameter("p1", "v1");
             Assert.Throws<VerifyException>(() => handlerTracer.VerifyBindedParameter("p1", "v2"));
             Assert.Throws<VerifyException>(() => handlerTracer.VerifyBindedParameter("p15", "v2"));
+            Assert.Throws<VerifyException>(() => handlerTracer.VerifyBindedParameter("p1", (string)null));
         }
         
         [Fact]

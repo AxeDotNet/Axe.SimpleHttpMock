@@ -18,6 +18,7 @@ namespace Axe.SimpleHttpMock.Test
             HttpResponseMessage response = await client.GetAsync("http://uri.does.not.exist");
 
             Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+            Assert.True(response.Content is StringContent);
         }
 
         [Fact]
