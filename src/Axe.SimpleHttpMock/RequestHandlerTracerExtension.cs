@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Linq;
 using System.Net.Http;
-using System.Net.Http.Formatting;
 using System.Threading.Tasks;
 
 namespace Axe.SimpleHttpMock
@@ -103,11 +102,11 @@ namespace Axe.SimpleHttpMock
 
         /// <summary>
         /// Get first request from the calling history. Read the content of the request with specified
-        /// <paramref name="formatter"/>.
+        /// <paramref name="deserializer"/>.
         /// </summary>
         /// <typeparam name="T">The deserialized type of the request content.</typeparam>
         /// <param name="tracer">The tracing information to verify.</param>
-        /// <param name="formatter">
+        /// <param name="deserializer">
         /// The formatter which will be used for deserializing. JSON formatter will be used if not specified.
         /// </param>
         /// <returns>
@@ -115,39 +114,39 @@ namespace Axe.SimpleHttpMock
         /// </returns>
         public static Task<T> FirstOrDefaultRequestContentAsync<T>(
             this IRequestHandlerTracer tracer,
-            MediaTypeFormatter formatter = null)
+            IContentDeserializer deserializer = null)
         {
             return DeserializeContentAsync<T>(
-                GetDefaultFormatterIfNull(formatter), 
+                GetDefaultDeserializerIfNull(deserializer), 
                 tracer.FirstOrDefaultRequestContent());
         }
 
         /// <summary>
         /// Get first request from the calling history. Read the content of the request with specified
-        /// <paramref name="formatter"/> for anonymous type.
+        /// <paramref name="deserializer"/> for anonymous type.
         /// </summary>
         /// <typeparam name="T">The anonymous type.</typeparam>
         /// <param name="tracer">The tracing information to verify.</param>
         /// <param name="template">The schema definition for the anonymous type.</param>
-        /// <param name="formatter">The formatter which will be used for deserializing.
+        /// <param name="deserializer">The formatter which will be used for deserializing.
         /// The formatter which will be used for deserializing. JSON formatter will be used if not specified.
         /// </param>
         /// <returns>A task reading the content of the request.</returns>
         public static Task<T> FirstOrDefaultRequestContentAsync<T>(
             this IRequestHandlerTracer tracer,
             T template,
-            MediaTypeFormatter formatter = null)
+            IContentDeserializer deserializer = null)
         {
-            return FirstOrDefaultRequestContentAsync<T>(tracer, formatter);
+            return FirstOrDefaultRequestContentAsync<T>(tracer, deserializer);
         }
 
         /// <summary>
         /// Get last request from the calling history. Read the content of the request with specified
-        /// <paramref name="formatter"/>.
+        /// <paramref name="deserializer"/>.
         /// </summary>
         /// <typeparam name="T">The deserialized type of the request content.</typeparam>
         /// <param name="tracer">The tracing information to verify.</param>
-        /// <param name="formatter">
+        /// <param name="deserializer">
         /// The formatter which will be used for deserializing. JSON formatter will be used if not specified.
         /// </param>
         /// <returns>
@@ -155,40 +154,40 @@ namespace Axe.SimpleHttpMock
         /// </returns>
         public static Task<T> LastOrDefaultRequestContentAsync<T>(
             this IRequestHandlerTracer tracer,
-            MediaTypeFormatter formatter = null)
+            IContentDeserializer deserializer = null)
         {
             return DeserializeContentAsync<T>(
-                GetDefaultFormatterIfNull(formatter), 
+                GetDefaultDeserializerIfNull(deserializer), 
                 tracer.LastOrDefaultRequestContent());
         }
 
 
         /// <summary>
         /// Get last request from the calling history. Read the content of the request with specified
-        /// <paramref name="formatter"/> for anonymous type.
+        /// <paramref name="deserializer"/> for anonymous type.
         /// </summary>
         /// <typeparam name="T">The anonymous type.</typeparam>
         /// <param name="tracer">The tracing information to verify.</param>
         /// <param name="template">The schema definition for the anonymous type.</param>
-        /// <param name="formatter">The formatter which will be used for deserializing.
+        /// <param name="deserializer">The formatter which will be used for deserializing.
         /// The formatter which will be used for deserializing. JSON formatter will be used if not specified.
         /// </param>
         /// <returns>A task reading the content of the request.</returns>
         public static Task<T> LastOrDefaultRequestContentAsync<T>(
             this IRequestHandlerTracer tracer,
             T template,
-            MediaTypeFormatter formatter = null)
+            IContentDeserializer deserializer = null)
         {
-            return LastOrDefaultRequestContentAsync<T>(tracer, formatter);
+            return LastOrDefaultRequestContentAsync<T>(tracer, deserializer);
         }
 
         /// <summary>
         /// Get single request from the calling history. Read the content of the request with specified
-        /// <paramref name="formatter"/>.
+        /// <paramref name="deserializer"/>.
         /// </summary>
         /// <typeparam name="T">The deserialized type of the request content.</typeparam>
         /// <param name="tracer">The tracing information to verify.</param>
-        /// <param name="formatter">
+        /// <param name="deserializer">
         /// The formatter which will be used for deserializing. JSON formatter will be used if not specified.
         /// </param>
         /// <returns>
@@ -196,42 +195,42 @@ namespace Axe.SimpleHttpMock
         /// </returns>
         public static Task<T> SingleOrDefaultRequestContentAsync<T>(
             this IRequestHandlerTracer tracer,
-            MediaTypeFormatter formatter = null)
+            IContentDeserializer deserializer = null)
         {
             return DeserializeContentAsync<T>(
-                GetDefaultFormatterIfNull(formatter), 
+                GetDefaultDeserializerIfNull(deserializer), 
                 tracer.SingleOrDefaultRequestContent());
         }
 
         /// <summary>
         /// Get single request from the calling history. Read the content of the request with specified
-        /// <paramref name="formatter"/> for anonymous type.
+        /// <paramref name="deserializer"/> for anonymous type.
         /// </summary>
         /// <typeparam name="T">The anonymous type.</typeparam>
         /// <param name="tracer">The tracing information to verify.</param>
         /// <param name="template">The schema definition for the anonymous type.</param>
-        /// <param name="formatter">The formatter which will be used for deserializing.
+        /// <param name="deserializer">The formatter which will be used for deserializing.
         /// The formatter which will be used for deserializing. JSON formatter will be used if not specified.
         /// </param>
         /// <returns>A task reading the content of the request.</returns>
         public static Task<T> SingleOrDefaultRequestContentAsync<T>(
             this IRequestHandlerTracer tracer,
             T template,
-            MediaTypeFormatter formatter = null)
+            IContentDeserializer deserializer = null)
         {
-            return SingleOrDefaultRequestContentAsync<T>(tracer, formatter);
+            return SingleOrDefaultRequestContentAsync<T>(tracer, deserializer);
         }
 
-        static MediaTypeFormatter GetDefaultFormatterIfNull(MediaTypeFormatter formatter)
+        static IContentDeserializer GetDefaultDeserializerIfNull(IContentDeserializer deserializer)
         {
-            return formatter ?? new JsonMediaTypeFormatter();
+            return deserializer ?? ContentFormatters.JsonDeserializer;
         }
 
-        static Task<T> DeserializeContentAsync<T>(MediaTypeFormatter formatter, HttpContent content)
+        static Task<T> DeserializeContentAsync<T>(IContentDeserializer deserializer, HttpContent content)
         {
             return content == null
                 ? Task.FromResult(default(T))
-                : content.ReadAsAsync<T>(new[] {formatter});
+                : deserializer.DeserializeAsync<T>(content);
         }
 
         static HttpContent FirstOrDefaultRequestContent(this IRequestHandlerTracer tracer)

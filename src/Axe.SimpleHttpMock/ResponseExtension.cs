@@ -1,6 +1,5 @@
 ﻿using System.Net;
 using System.Net.Http;
-using System.Net.Http.Formatting;
 
 namespace Axe.SimpleHttpMock
 {
@@ -27,16 +26,16 @@ namespace Axe.SimpleHttpMock
         /// no content will be specified.
         /// </param>
         /// <param name="statusCode">The status code of the response, default is <see cref="HttpStatusCode.OK"/>.</param>
-        /// <param name="formatter">The content formatter.</param>
+        /// <param name="serializer">The content serializer.</param>
         /// <returns>An HTTP response message.</returns>
         public static HttpResponseMessage AsResponse(
             this object payload, 
             HttpStatusCode statusCode = HttpStatusCode.OK,
-            MediaTypeFormatter formatter = null)
+            IContentSerializer serializer = null)
         {
-            ObjectContent content = payload == null
+            HttpContent content = payload == null
                 ? null
-                : new ObjectContent(payload.GetType(), payload, formatter ?? new JsonMediaTypeFormatter());
+                : (serializer ?? ContentFormatters.JsonSerializer).Format(payload);
             return new HttpResponseMessage(statusCode)
             {
                 Content = content
