@@ -1,7 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.Linq;
+using Axe.SimpleHttpMock.ServerImpl.UriTemplates;
 
 namespace Axe.SimpleHttpMock.ServerImpl.Matchers
 {
@@ -23,24 +22,8 @@ namespace Axe.SimpleHttpMock.ServerImpl.Matchers
                     return false;
                 }
 
-                UriTemplateMatch match = new UriTemplate(uriTemplate).Match(new Uri(uriPrefix), req.RequestUri);
-                if (match == null)
-                {
-                    return false;
-                }
-
-                var parameters = new List<KeyValuePair<string, object>>();
-                Copy(parameters, match.BoundVariables);
-                return new MatchingResult(true, parameters);
+                return new UriTemplate(uriTemplate).IsMatch(new Uri(uriPrefix), req.RequestUri);
             };
-        }
-
-        static void Copy(ICollection<KeyValuePair<string, object>> target, NameValueCollection collection)
-        {
-            foreach (string k in collection.AllKeys)
-            {
-                target.Add(new KeyValuePair<string, object>(k, collection[k]));
-            }
         }
     }
 }

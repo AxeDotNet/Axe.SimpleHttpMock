@@ -29,17 +29,8 @@ namespace Axe.SimpleHttpMock.ServerImpl
 
         static readonly Dictionary<string, object> EmptyDictionary =
             new Dictionary<string, object>();
-
-        /// <summary>
-        /// Create a new <see cref="MatchingResult"/> instance.
-        /// </summary>
-        /// <param name="isMatch">
-        /// <c>true</c> if current handler can handle the request. Otherwise, <c>false</c>.
-        /// </param>
-        /// <param name="parameters">
-        /// The binded parametes agains the request.
-        /// </param>
-        public MatchingResult(bool isMatch, IEnumerable<KeyValuePair<string, object>> parameters)
+        
+        internal MatchingResult(bool isMatch, IEnumerable<KeyValuePair<string, object>> parameters)
         {
             IsMatch = isMatch;
             Parameters = CreateParameters(parameters);

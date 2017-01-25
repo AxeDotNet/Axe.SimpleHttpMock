@@ -18,9 +18,12 @@ namespace Axe.SimpleHttpMock.Test
         [InlineData("http://www.base.com", "", "http://www.base.com/")]
         [InlineData("http://www.base.com", "user", "http://www.base.com/user")]
         [InlineData("http://www.base.com", "user/", "http://www.base.com/user/")]
+        [InlineData("http://www.base.com", "user", "http://www.base.com/user/")]
+        [InlineData("http://www.base.com", "user/", "http://www.base.com/user")]
         [InlineData("http://www.base.com", "user", "http://www.base.com/user?query=string")]
         [InlineData("http://www.base.com", "user/", "http://www.base.com/user/?query=string")]
         [InlineData("http://www.base.com", "user/{userId}", "http://www.base.com/user/1.htm?query=string")]
+        [InlineData("http://www.base.com", "user/{userId}", "http://www.base.com/user/1.htm/?query=string")]
         [InlineData("http://www.base.com", "user/{userId}/session", "http://www.base.com/user/1.htm/session?query=string")]
         [InlineData("http://www.base.com", "user?query=string", "http://www.base.com/user?query=string")]
         [InlineData("http://www.base.com", "user?query={value}", "http://www.base.com/user?query=whatever")]
@@ -29,6 +32,9 @@ namespace Axe.SimpleHttpMock.Test
         [InlineData("http://www.base.com", "user?query={value}", "http://www.base.com/user?query=&other=value")]
         [InlineData("http://www.base.com", "user?query={value}", "http://www.base.com/user?other=value&query=")]
         [InlineData("http://www.base.com", "user?query={value}", "http://www.base.com/user?other=value")]
+        [InlineData("http://www.base.com", "user?query={value}", "http://www.base.com/user/?query=value")]
+        [InlineData("http://www.base.com", "user", "http://www.base.com/user/?query=string")]
+        [InlineData("http://www.base.com", "user/", "http://www.base.com/user?query=string")]
         public async Task should_return_desired_message_if_handler_matches_for_uri(
             string serviceUri, string route, string requestUri)
         {
@@ -48,19 +54,13 @@ namespace Axe.SimpleHttpMock.Test
 
         [Theory]
         [InlineData("http://www.base.com", "", "http://www.base.com/user")]
-        [InlineData("http://www.base.com", "user", "http://www.base.com/user/")]
-        [InlineData("http://www.base.com", "user/", "http://www.base.com/user")]
-        [InlineData("http://www.base.com", "user", "http://www.base.com/user/?query=string")]
-        [InlineData("http://www.base.com", "user/", "http://www.base.com/user?query=string")]
-        [InlineData("http://www.base.com", "user/{userId}", "http://www.base.com/user/1.htm/?query=string")]
         [InlineData("http://www.base.com", "user/{userId}/session", "http://www.base.com/user/1/2/session?query=string")]
         [InlineData("http://www.base.com", "user?query=string", "http://www.base.com/user?parameter=string")]
-        [InlineData("http://www.base.com", "user?query={value}", "http://www.base.com/user/?query=value")]
         public async Task should_return_404_if_no_handler_matches_for_uri(
-            string serviceUri, string route, string requestUri)
+            string serviceUri, string template, string requestUri)
         {
             var server = new MockHttpServer();
-            server.WithService(serviceUri).Api(route, "GET", HttpStatusCode.OK);
+            server.WithService(serviceUri).Api(template, "GET", HttpStatusCode.OK);
 
             HttpClient client = CreateClient(server);
             HttpResponseMessage response = await client.GetAsync(requestUri);
@@ -157,10 +157,10 @@ namespace Axe.SimpleHttpMock.Test
                 jsonString,
                 new { Parameter = default(Dictionary<string, object>) });
 
-            Assert.Equal("12", content.Parameter["USERID"]);
-            Assert.Equal("28000", content.Parameter["SESSIONID"]);
-            Assert.Equal("v1", content.Parameter["VALUE1"]);
-            Assert.Equal("v2", content.Parameter["VALUE2"]);
+            Assert.Equal("12", content.Parameter["userId"]);
+            Assert.Equal("28000", content.Parameter["sessionId"]);
+            Assert.Equal("v1", content.Parameter["value1"]);
+            Assert.Equal("v2", content.Parameter["value2"]);
         }
 
         [Fact]
@@ -185,8 +185,8 @@ namespace Axe.SimpleHttpMock.Test
                 jsonString,
                 new { Parameter = default(Dictionary<string, object>) });
 
-            Assert.Equal(null, content.Parameter["VALUE1"]);
-            Assert.Equal("v2", content.Parameter["VALUE2"]);
+            Assert.Equal(string.Empty, content.Parameter["value1"]);
+            Assert.Equal("v2", content.Parameter["value2"]);
         }
 
         [Fact]
