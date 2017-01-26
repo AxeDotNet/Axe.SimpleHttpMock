@@ -39,10 +39,10 @@ namespace Axe.SimpleHttpMock.ServerImpl.ContentFormatter
                 s => JsonConvert.DeserializeAnonymousType(s, template));
         }
 
-        static Task<T> DeserializeContentAsync<T>(HttpContent content, Func<string, T> deserializingFunc)
+        static async Task<T> DeserializeContentAsync<T>(HttpContent content, Func<string, T> deserializingFunc)
         {
-            return content.ReadAsStringAsync().ContinueWith(
-                t => deserializingFunc(t.Result));
+            string jsonStr = await content.ReadAsStringAsync().ConfigureAwait(false);
+            return deserializingFunc(jsonStr);
         }
     }
 }
