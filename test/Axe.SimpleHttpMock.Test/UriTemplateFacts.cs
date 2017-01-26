@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Axe.SimpleHttpMock.ServerImpl;
-using Axe.SimpleHttpMock.ServerImpl.UriTemplates;
+using Axe.SimpleHttpMock.ServerImpl.Handlers.UriTemplates;
 using Xunit;
 
 namespace Axe.SimpleHttpMock.Test

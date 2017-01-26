@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Threading;
-using Axe.SimpleHttpMock.ServerImpl.UriTemplates;
+using Axe.SimpleHttpMock.Migration;
+using Axe.SimpleHttpMock.ServerImpl.Handlers.UriTemplates;
 
 namespace Axe.SimpleHttpMock.ServerImpl.Handlers
 {
@@ -28,7 +29,7 @@ namespace Axe.SimpleHttpMock.ServerImpl.Handlers
             handlingFunc.ThrowIfNull(nameof(handlingFunc));
 
             m_handlingFunc = handlingFunc;
-            m_methods = methods ?? Array.Empty<string>();
+            m_methods = methods ?? EmptyArray<string>.Instance;
             m_uriTemplate = new UriTemplate(template);
             m_baseAddress = new Uri(baseAddress, UriKind.Absolute);
         }
@@ -43,7 +44,7 @@ namespace Axe.SimpleHttpMock.ServerImpl.Handlers
             handlingFunc.ThrowIfNull(nameof(handlingFunc));
 
             m_handlingFunc = handlingFunc;
-            m_methods = Array.Empty<string>();
+            m_methods = EmptyArray<string>.Instance;
             m_uriTemplate = new UriTemplate(string.Empty);
             m_baseAddress = new Uri(baseAddress, UriKind.Absolute);
 

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 
-namespace Axe.SimpleHttpMock.ServerImpl.UriTemplates
+namespace Axe.SimpleHttpMock.ServerImpl.Handlers.UriTemplates
 {
     class UriTemplateElement
     {
