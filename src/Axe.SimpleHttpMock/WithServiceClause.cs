@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
 using Axe.SimpleHttpMock.ServerImpl;
-using Axe.SimpleHttpMock.ServerImpl.Matchers;
+using Axe.SimpleHttpMock.ServerImpl.Handlers;
 
 namespace Axe.SimpleHttpMock
 {
@@ -37,32 +37,6 @@ namespace Axe.SimpleHttpMock
             this.server = server;
             this.serviceUriPrefix = uri.AbsoluteUri;
         }
-        
-        void AddUriTemplateHandler(
-            MatchingFunc requestMatchFunc,
-            RequestHandlingFunc responseFunc,
-            string name,
-            bool defaultHandler = false)
-        {
-            if (requestMatchFunc == null)
-            {
-                throw new ArgumentNullException(nameof(requestMatchFunc));
-            }
-
-            if (responseFunc == null)
-            {
-                throw new ArgumentNullException(nameof(responseFunc));
-            }
-
-            if (defaultHandler)
-            {
-                server.AddDefaultHandler(new DelegatedRequestHandler(requestMatchFunc, responseFunc, name));
-            }
-            else
-            {
-                server.AddHandler(new DelegatedRequestHandler(requestMatchFunc, responseFunc, name));
-            }
-        }
 
         /// <summary>
         /// Add a default handler. If no other handler can handle the request, the default handler will do it.
@@ -80,14 +54,10 @@ namespace Axe.SimpleHttpMock
             {
                 throw new ArgumentNullException(nameof(responseFunc));
             }
-
-            AddUriTemplateHandler(
-                req =>
-                    req.RequestUri != null &&
-                    req.RequestUri.AbsoluteUri.StartsWith(serviceUriPrefix, StringComparison.InvariantCultureIgnoreCase),
+            AddDefaultUriTemplateHandler(
+                serviceUriPrefix,
                 (req, p, c) => responseFunc(req),
-                name,
-                true);
+                name);
             return this;
         }
 
@@ -169,11 +139,13 @@ namespace Axe.SimpleHttpMock
             Func<HttpRequestMessage, IDictionary<string, object>, HttpResponseMessage> responseFunc,
             string name = null)
         {
-            MatchingFunc matchingFunc = RequestTemplateMatcher.CreateMatchingDelegate(
+            AddUriTemplateHandler(
                 serviceUriPrefix,
                 uriTemplate,
-                methods);
-            AddUriTemplateHandler(matchingFunc, (req, @params, c) => responseFunc(req, @params), name);
+                methods,
+                (req, @params, c) => responseFunc(req, @params),
+                name);
+            
             return this;
         }
 
@@ -240,11 +212,13 @@ namespace Axe.SimpleHttpMock
             Func<IDictionary<string, object>, HttpResponseMessage> responseFunc,
             string name = null)
         {
-            MatchingFunc matchingFunc = RequestTemplateMatcher.CreateMatchingDelegate(
+            AddUriTemplateHandler(
                 serviceUriPrefix,
                 uriTemplate,
-                methods);
-            AddUriTemplateHandler(matchingFunc, (req, @params, c) => responseFunc(@params), name);
+                methods,
+                (req, @params, c) => responseFunc(@params),
+                name);
+
             return this;
         }
 
@@ -377,6 +351,34 @@ namespace Axe.SimpleHttpMock
         public MockHttpServer Done()
         {
             return server;
+        }
+
+        void AddDefaultUriTemplateHandler(
+            string baseAddress,
+            RequestHandlingFunc handlingFunc,
+            string name)
+        {
+            server.AddDefaultHandler(
+                new UriTemplateRequestHandler(
+                    baseAddress,
+                    handlingFunc,
+                    name));
+        }
+
+        void AddUriTemplateHandler(
+            string baseAddress,
+            string template,
+            string[] methods,
+            RequestHandlingFunc handlingFunc,
+            string name)
+        {
+            server.AddHandler(
+                new UriTemplateRequestHandler(
+                    baseAddress,
+                    template,
+                    methods,
+                    handlingFunc,
+                    name));
         }
 
         static void ThrowIfNull<T>(T value, string name)

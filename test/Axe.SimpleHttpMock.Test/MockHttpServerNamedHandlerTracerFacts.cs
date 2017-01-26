@@ -6,6 +6,7 @@ using System.Net.Http.Formatting;
 using System.Text;
 using System.Threading.Tasks;
 using Axe.SimpleHttpMock.ServerImpl;
+using Axe.SimpleHttpMock.ServerImpl.Handlers;
 using Newtonsoft.Json;
 using Xunit;
 

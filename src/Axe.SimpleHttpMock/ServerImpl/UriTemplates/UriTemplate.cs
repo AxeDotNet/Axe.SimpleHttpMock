@@ -21,14 +21,7 @@ namespace Axe.SimpleHttpMock.ServerImpl.UriTemplates
 
         public MatchingResult IsMatch(Uri baseAddress, Uri uri)
         {
-            if (!IsUriPrefixMatch(baseAddress, uri))
-            {
-                return false;
-            }
-
-            string[] relativePathToExamine = GetRelativePathSegments(
-                GetSegments(uri),
-                GetSegments(baseAddress));
+            string[] relativePathToExamine = GetRelativePathSegments(baseAddress, uri);
             if (relativePathToExamine == null)
             {
                 return false;
@@ -45,6 +38,11 @@ namespace Axe.SimpleHttpMock.ServerImpl.UriTemplates
                 pathMatchingResult.Parameters.Concat(queryMatchingResult.Parameters));
         }
 
+        public bool IsBaseAddressMatch(Uri baseAddress, Uri uri)
+        {
+            return GetRelativePathSegments(baseAddress, uri) != null;
+        }
+
         static bool IsUriPrefixMatch(Uri baseAddressUri, Uri uriToExamine)
         {
             return baseAddressUri.Scheme == uriToExamine.Scheme &&
@@ -53,9 +51,18 @@ namespace Axe.SimpleHttpMock.ServerImpl.UriTemplates
                 baseAddressUri.UserInfo == uriToExamine.UserInfo;
         }
 
-        static string[] GetRelativePathSegments(IReadOnlyList<string> pathSegments, IReadOnlyCollection<string> basePathSegments)
+        static string[] GetRelativePathSegments(Uri baseAddress, Uri uri)
         {
-            return basePathSegments.Where((t, i) => !pathSegments[i].Equals(t, StringComparison.InvariantCultureIgnoreCase)).Any()
+            if (!IsUriPrefixMatch(baseAddress, uri))
+            {
+                return null;
+            }
+
+            IReadOnlyList<string> pathSegments = GetSegments(uri);
+            IReadOnlyCollection<string> basePathSegments = GetSegments(baseAddress);
+
+            return basePathSegments
+                .Where((t, i) => !pathSegments[i].Equals(t, StringComparison.InvariantCultureIgnoreCase)).Any()
                 ? null
                 : pathSegments.Skip(basePathSegments.Count).ToArray();
         }

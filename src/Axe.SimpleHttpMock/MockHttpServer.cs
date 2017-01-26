@@ -69,11 +69,11 @@ namespace Axe.SimpleHttpMock
             string requestBriefing = $"{request.Method.Method} {request.RequestUri}";
             Logger.Log($"[Mock Server] Receiving request: {requestBriefing}");
 
-            IRequestHandler matchedHandler = m_handlers.LastOrDefault(m => m.IsMatch(request));
-            if (matchedHandler == null)
+            KeyValuePair<IRequestHandler, MatchingResult>? match = GetMatchedHandler(m_handlers, request);
+            if (match == null)
             {
-                matchedHandler = m_defaultHandlers.LastOrDefault(m => m.IsMatch(request));
-                if (matchedHandler == null)
+                match = GetMatchedHandler(m_defaultHandlers, request);
+                if (match == null)
                 {
                     Logger.Log($"[Mock Server] Cannot find matched handler for request: {requestBriefing}");
                     return new HttpResponseMessage(HttpStatusCode.NotFound)
@@ -83,14 +83,26 @@ namespace Axe.SimpleHttpMock
                 }
             }
 
-            Logger.Log($"[Mock Server] Matched handler found with name '{matchedHandler.Name}'");
-            HttpResponseMessage response = await matchedHandler.HandleAsync(
+            IRequestHandler handler = match.Value.Key;
+            MatchingResult matchingResult = match.Value.Value;
+
+            Logger.Log($"[Mock Server] Matched handler found with name '{handler.Name}'");
+            HttpResponseMessage response = await handler.HandleAsync(
                 request,
-                matchedHandler.GetParameters(request),
+                matchingResult.Parameters,
                 cancellationToken,
                 Logger).ConfigureAwait(false);
             Logger.Log($"[Mock Server] The request '{requestBriefing}' generates response '{response.StatusCode}'");
             return response;
+        }
+
+        static KeyValuePair<IRequestHandler, MatchingResult>? GetMatchedHandler(IList<IRequestHandler> handlers, HttpRequestMessage request)
+        {
+            var matchedHandler = handlers
+                .Select(handler => new { Handler = handler, MatchingResult = handler.IsMatch(request)})
+                .LastOrDefault(pair => pair.MatchingResult.IsMatch);
+            if (matchedHandler == null) { return null; }
+            return new KeyValuePair<IRequestHandler, MatchingResult>(matchedHandler.Handler, matchedHandler.MatchingResult);
         }
 
         /// <summary>

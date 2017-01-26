@@ -3,6 +3,7 @@ using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using Axe.SimpleHttpMock.ServerImpl;
+using Axe.SimpleHttpMock.ServerImpl.Handlers;
 
 namespace Axe.SimpleHttpMock
 {
@@ -27,30 +28,17 @@ namespace Axe.SimpleHttpMock
         /// The actual HTTP request message.
         /// </param>
         /// <returns>
-        /// <c>true</c>, if the request can be handled. Otherwise, <c>false</c>.
+        /// <c>true</c>, if the request can be handled. Otherwise, <c>false</c>. The matching
+        /// result can also contains the parameters extracted from the request.
         /// </returns>
-        bool IsMatch(HttpRequestMessage request);
-
-        /// <summary>
-        /// Accessing http request is powerful but not easy to use. So you can extract some
-        /// useful information from the request before it goes into the handler. The extracting
-        /// method is implementation specific.
-        /// </summary>
-        /// <param name="request">
-        /// The actual HTTP request message.
-        /// </param>
-        /// <returns>
-        /// The binded parameters. It is recommended to ignore the case of the key to make
-        /// the parameter accessing easy to use.
-        /// </returns>
-        IDictionary<string, object> GetParameters(HttpRequestMessage request);
+        MatchingResult IsMatch(HttpRequestMessage request);
 
         /// <summary>
         /// The is the core function to create a response. This function will not be called
         /// if <see cref="IsMatch"/> returns <c>false</c>.
         /// </summary>
         /// <param name="request">The request message received.</param>
-        /// <param name="parameters">The parameters that are extracted using the <see cref="GetParameters"/>
+        /// <param name="parameters">The parameters that are extracted using the <see cref="IsMatch"/>
         /// method.</param>
         /// <param name="cancellationToken">
         /// The cancellation token passed to the async method.
