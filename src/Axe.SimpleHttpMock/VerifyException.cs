@@ -1,12 +1,16 @@
 ﻿using System;
+#if NET45
 using System.Runtime.Serialization;
+#endif
 
 namespace Axe.SimpleHttpMock
 {
     /// <summary>
     /// Representing an verification error.
     /// </summary>
+#if NET45
     [Serializable]
+#endif
     public class VerifyException : Exception
     {
         /// <summary>
@@ -27,6 +31,7 @@ namespace Axe.SimpleHttpMock
         /// <param name="inner">The original exception that caused current exception.</param>
         public VerifyException(string message, Exception inner) : base(message, inner) { }
 
+#if NET45
         /// <summary>
         /// Create a <see cref="VerifyException"/> from serializing context. 
         /// </summary>
@@ -35,5 +40,6 @@ namespace Axe.SimpleHttpMock
         protected VerifyException(
             SerializationInfo info,
             StreamingContext context) : base(info, context) { }
+#endif
     }
 }
