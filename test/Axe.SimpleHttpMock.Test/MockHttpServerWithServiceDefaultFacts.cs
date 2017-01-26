@@ -2,6 +2,7 @@
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
+using Axe.SimpleHttpMock.Test.Helpers;
 using Xunit;
 
 namespace Axe.SimpleHttpMock.Test

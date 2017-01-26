@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Net.Http;
+using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 
 namespace Axe.SimpleHttpMock.Test.Helpers
 {
-    static class HttpResponseExtensions
+    static class HttpClientExtensions
     {
         public static async Task<T> ReadAs<T>(this HttpResponseMessage response)
         {
@@ -31,6 +32,21 @@ namespace Axe.SimpleHttpMock.Test.Helpers
         public static Task<T> ReadAs<T>(this HttpResponseMessage response, T template)
         {
             return ReadAs<T>(response);
+        }
+
+        public static Task<HttpResponseMessage> PostAsJsonAsync<T>(this HttpClient client, string uri, T payload)
+        {
+            return client.PostAsync(uri, CreateJsonContent(payload));
+        }
+
+        public static Task<HttpResponseMessage> PutAsJsonAsync<T>(this HttpClient client, string uri, T payload)
+        {
+            return client.PutAsync(uri, CreateJsonContent(payload));
+        }
+
+        static StringContent CreateJsonContent<T>(T payload)
+        {
+            return new StringContent(JsonConvert.SerializeObject(payload), Encoding.UTF8, "application/json");
         }
     }
 }

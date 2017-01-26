@@ -2,11 +2,11 @@
 using System.Linq;
 using System.Net;
 using System.Net.Http;
-using System.Net.Http.Formatting;
 using System.Text;
 using System.Threading.Tasks;
 using Axe.SimpleHttpMock.ServerImpl;
 using Axe.SimpleHttpMock.ServerImpl.Handlers;
+using Axe.SimpleHttpMock.Test.Helpers;
 using Newtonsoft.Json;
 using Xunit;
 
@@ -154,10 +154,9 @@ namespace Axe.SimpleHttpMock.Test
 
             var client = new HttpClient(server);
 
-            HttpResponseMessage response = await client.PostAsync(
+            HttpResponseMessage response = await client.PostAsJsonAsync(
                 "http://www.base.com/login",
-                new { username = "n", password = "p" },
-                new JsonMediaTypeFormatter());
+                new { username = "n", password = "p" });
 
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
             var actualRequestContent = await server["login"].SingleOrDefaultRequestContentAsync(
