@@ -25,7 +25,7 @@ namespace Axe.SimpleHttpMock.ServerImpl.Handlers
 
         public override MatchingResult IsMatch(HttpRequestMessage request)
         {
-            return UriTemplate.IsBaseAddressMatch(baseAddress, request.RequestUri);
+            return baseAddress.IsBaseAddressMatch(request.RequestUri);
         }
 
         protected override HttpResponseMessage CreateResponse(

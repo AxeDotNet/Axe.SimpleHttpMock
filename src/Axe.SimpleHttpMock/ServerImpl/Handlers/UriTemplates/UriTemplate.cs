@@ -1,12 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 
 namespace Axe.SimpleHttpMock.ServerImpl.Handlers.UriTemplates
 {
     class UriTemplate
     {
-        static readonly char[] Slashes = { '\\', '/' };
         static readonly Uri fakeBaseAddress = new Uri("http://axe.simplehttp.mock");
         
         readonly UriTemplatePathMatcher m_uriTemplatePathMatcher;
@@ -21,7 +19,7 @@ namespace Axe.SimpleHttpMock.ServerImpl.Handlers.UriTemplates
 
         public MatchingResult IsMatch(Uri baseAddress, Uri uri)
         {
-            string[] relativePathToExamine = GetRelativePathSegments(baseAddress, uri);
+            string[] relativePathToExamine = baseAddress.GetRelativePathSegments(uri);
             if (relativePathToExamine == null)
             {
                 return false;
@@ -36,45 +34,6 @@ namespace Axe.SimpleHttpMock.ServerImpl.Handlers.UriTemplates
             return new MatchingResult(
                 true,
                 pathMatchingResult.Parameters.Concat(queryMatchingResult.Parameters));
-        }
-
-        public static bool IsBaseAddressMatch(Uri baseAddress, Uri uri)
-        {
-            return EnumerateRelativePathSegments(baseAddress, uri) != null;
-        }
-
-        static bool IsUriPrefixMatch(Uri baseAddressUri, Uri uriToExamine)
-        {
-            return baseAddressUri.Scheme == uriToExamine.Scheme &&
-                baseAddressUri.Host == uriToExamine.Host &&
-                baseAddressUri.Port == uriToExamine.Port &&
-                baseAddressUri.UserInfo == uriToExamine.UserInfo;
-        }
-
-        static string[] GetRelativePathSegments(Uri baseAddress, Uri uri)
-        {
-            return EnumerateRelativePathSegments(baseAddress, uri)?.ToArray();
-        }
-
-        static IEnumerable<string> EnumerateRelativePathSegments(Uri baseAddress, Uri uri)
-        {
-            if (!IsUriPrefixMatch(baseAddress, uri))
-            {
-                return null;
-            }
-
-            IReadOnlyList<string> pathSegments = GetSegments(uri);
-            IReadOnlyCollection<string> basePathSegments = GetSegments(baseAddress);
-
-            return basePathSegments
-                .Where((t, i) => !pathSegments[i].Equals(t, StringComparison.InvariantCultureIgnoreCase)).Any()
-                ? null
-                : pathSegments.Skip(basePathSegments.Count);
-        }
-
-        static string[] GetSegments(Uri uri)
-        {
-            return uri.Segments.Select(s => s.Trim(Slashes)).ToArray();
         }
     }
 }

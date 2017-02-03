@@ -57,6 +57,7 @@
     <Compile Include="RequestHandlerTracerExtension.cs" />
     <Compile Include="ServerImpl\CallingHistoryContext.cs" />
     <Compile Include="ServerImpl\Handlers\BaseAddressOnlyRequestHandler.cs" />
+    <Compile Include="ServerImpl\Handlers\UriTemplates\UriExtensions.cs" />
     <Compile Include="ServerImpl\RequestHandlerBase.cs" />
     <Compile Include="ServerImpl\RequestHandlingFunc.cs" />
     <Compile Include="ServerImpl\MatchingFunc.cs" />
