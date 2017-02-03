@@ -14,6 +14,6 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 [assembly: Guid("9ef06743-3d85-496b-a3e9-5650b12ab8b6")]
 
-[assembly: AssemblyVersion("0.5.1.0")]
-[assembly: AssemblyFileVersion("0.5.1.1")]
+[assembly: AssemblyVersion("0.5.2.0")]
+[assembly: AssemblyFileVersion("0.5.2.1")]
 [assembly: InternalsVisibleTo("Axe.SimpleHttpMock.Test")]
