@@ -6,49 +6,22 @@ namespace Axe.SimpleHttpMock.ServerImpl.Handlers.UriTemplates
 {
     class UriQueryStringTemplateMatcher
     {
-        static readonly char[] queryMark = {'?'};
         readonly Dictionary<string, UriTemplateElement> queryElements;
 
-        public UriQueryStringTemplateMatcher(Uri fakeBaseAddressTemplate)
+        public UriQueryStringTemplateMatcher(Uri uriWithQueryTemplate)
         {
-            string query = fakeBaseAddressTemplate.Query.TrimStart(queryMark);
-            queryElements = GetQueryElements(query);
+            queryElements = GetQueryElements(uriWithQueryTemplate.Query);
         }
 
-        static IEnumerable<KeyValuePair<string, string>> GetQueryCollection(string query)
+        static Dictionary<string, UriTemplateElement> GetQueryElements(string queryString)
         {
-            query = query.TrimStart(queryMark);
-            if (string.IsNullOrEmpty(query))
-            {
-                yield break;
-            }
-
-            var pairs = query.Split('&');
-            foreach (var pair in pairs)
-            {
-                int equalSignIndex = pair.IndexOf('=');
-                if (equalSignIndex > 0)
-                {
-                    var val = pair.Substring(equalSignIndex + 1);
-                    if (!string.IsNullOrEmpty(val))
-                    {
-                        val = Uri.UnescapeDataString(val);
-                    }
-
-                    yield return new KeyValuePair<string, string>(pair.Substring(0, equalSignIndex), val);
-                }
-            }
-        }
-
-        static Dictionary<string, UriTemplateElement> GetQueryElements(string query)
-        {
-            return GetQueryCollection(query)
+            return queryString.GetQueryCollection()
                 .ToDictionary(item => item.Key, item => new UriTemplateElement(item.Value));
         }
         
         public MatchingResult IsMatch(string queryString)
         {
-            Dictionary<string, string> queryStringPairs = GetQueryCollection(queryString)
+            Dictionary<string, string> queryStringPairs = queryString.GetQueryCollection()
                 .ToDictionary(p => p.Key, p => p.Value);
             if (!ContainsAllNonVariablePairs(queryStringPairs)) { return false; }
 

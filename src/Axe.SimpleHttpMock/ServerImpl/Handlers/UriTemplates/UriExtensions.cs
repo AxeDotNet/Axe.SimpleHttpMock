@@ -9,6 +9,8 @@ namespace Axe.SimpleHttpMock.ServerImpl.Handlers.UriTemplates
     {
         static readonly char[] Slashes = { '\\', '/' };
 
+        static readonly char[] queryMark = { '?' };
+
         static bool IsUriPrefixMatch(Uri baseAddressUri, Uri uriToExamine)
         {
             return baseAddressUri.Scheme == uriToExamine.Scheme &&
@@ -69,6 +71,31 @@ namespace Axe.SimpleHttpMock.ServerImpl.Handlers.UriTemplates
             return baseAddressPath.Length == pathAndQuery.Length 
                 ? string.Empty 
                 : RemoveLeadingSlash(pathAndQuery.Substring(baseAddressPath.Length));
+        }
+
+        public static IEnumerable<KeyValuePair<string, string>> GetQueryCollection(this string queryString)
+        {
+            var query = queryString.TrimStart(queryMark);
+            if (string.IsNullOrEmpty(query))
+            {
+                yield break;
+            }
+
+            var pairs = query.Split('&');
+            foreach (var pair in pairs)
+            {
+                int equalSignIndex = pair.IndexOf('=');
+                if (equalSignIndex > 0)
+                {
+                    var val = pair.Substring(equalSignIndex + 1);
+                    if (!string.IsNullOrEmpty(val))
+                    {
+                        val = Uri.UnescapeDataString(val);
+                    }
+
+                    yield return new KeyValuePair<string, string>(pair.Substring(0, equalSignIndex), val);
+                }
+            }
         }
     }
 }

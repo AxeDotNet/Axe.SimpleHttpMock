@@ -43,6 +43,13 @@ namespace Axe.SimpleHttpMock.Test
             Assert.Equal(expectedRelativeUri, new Uri(baseAddress).GetRelativeUri(new Uri(actualUri)));
         }
 
+        [Theory]
+        [MemberData(nameof(NotMatchedBaseAddressCases))]
+        public void should_get_null_if_uris_do_not_match(string baseAddress, string notMatchedUri)
+        {
+            Assert.Null(new Uri(baseAddress).GetRelativeUri(new Uri(notMatchedUri)));
+        }
+
         public static IEnumerable<object[]> NotMatchedBaseAddressCases
         {
             get
