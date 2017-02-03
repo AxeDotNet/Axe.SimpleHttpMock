@@ -38,9 +38,9 @@ namespace Axe.SimpleHttpMock.ServerImpl.Handlers.UriTemplates
                 pathMatchingResult.Parameters.Concat(queryMatchingResult.Parameters));
         }
 
-        public bool IsBaseAddressMatch(Uri baseAddress, Uri uri)
+        public static bool IsBaseAddressMatch(Uri baseAddress, Uri uri)
         {
-            return GetRelativePathSegments(baseAddress, uri) != null;
+            return EnumerateRelativePathSegments(baseAddress, uri) != null;
         }
 
         static bool IsUriPrefixMatch(Uri baseAddressUri, Uri uriToExamine)
@@ -53,6 +53,11 @@ namespace Axe.SimpleHttpMock.ServerImpl.Handlers.UriTemplates
 
         static string[] GetRelativePathSegments(Uri baseAddress, Uri uri)
         {
+            return EnumerateRelativePathSegments(baseAddress, uri)?.ToArray();
+        }
+
+        static IEnumerable<string> EnumerateRelativePathSegments(Uri baseAddress, Uri uri)
+        {
             if (!IsUriPrefixMatch(baseAddress, uri))
             {
                 return null;
@@ -64,7 +69,7 @@ namespace Axe.SimpleHttpMock.ServerImpl.Handlers.UriTemplates
             return basePathSegments
                 .Where((t, i) => !pathSegments[i].Equals(t, StringComparison.InvariantCultureIgnoreCase)).Any()
                 ? null
-                : pathSegments.Skip(basePathSegments.Count).ToArray();
+                : pathSegments.Skip(basePathSegments.Count);
         }
 
         static string[] GetSegments(Uri uri)

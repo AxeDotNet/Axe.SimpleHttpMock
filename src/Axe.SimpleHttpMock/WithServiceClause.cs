@@ -54,9 +54,9 @@ namespace Axe.SimpleHttpMock
             {
                 throw new ArgumentNullException(nameof(responseFunc));
             }
-            AddDefaultUriTemplateHandler(
+            AddDefaultHandler(
                 serviceUriPrefix,
-                (req, p, c) => responseFunc(req),
+                responseFunc,
                 name);
             return this;
         }
@@ -353,13 +353,13 @@ namespace Axe.SimpleHttpMock
             return server;
         }
 
-        void AddDefaultUriTemplateHandler(
+        void AddDefaultHandler(
             string baseAddress,
-            RequestHandlingFunc handlingFunc,
+            Func<HttpRequestMessage, HttpResponseMessage> handlingFunc,
             string name)
         {
             server.AddDefaultHandler(
-                new UriTemplateRequestHandler(
+                new BaseAddressOnlyRequestHandler(
                     baseAddress,
                     handlingFunc,
                     name));
