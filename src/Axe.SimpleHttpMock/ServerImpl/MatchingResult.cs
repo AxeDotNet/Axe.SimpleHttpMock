@@ -10,15 +10,15 @@ namespace Axe.SimpleHttpMock.ServerImpl
     /// </summary>
     public sealed class MatchingResult
     {
-#if !NET45
-        class InvarientCultureIgnoreCaseComparer : IEqualityComparer<string>
+#if NET_CORE
+        class IgnoreCaseComparer : IEqualityComparer<string>
         {
             public bool Equals(string x, string y)
             {
                 if (x == y) { return true; }
                 if (x == null) { return false; }
                 if (y == null) { return false; }
-                return x.Equals(y, StringComparison.InvariantCultureIgnoreCase);
+                return x.Equals(y, StringComparison.OrdinalIgnoreCase);
             }
 
             public int GetHashCode(string obj)
@@ -28,7 +28,7 @@ namespace Axe.SimpleHttpMock.ServerImpl
             }
         }
 
-        static readonly InvarientCultureIgnoreCaseComparer InvarientIgnoreCaseComparer = new InvarientCultureIgnoreCaseComparer();
+        static readonly IgnoreCaseComparer ignoreCaseComparer = new IgnoreCaseComparer();
 #endif
 
         /// <summary>
@@ -68,8 +68,8 @@ namespace Axe.SimpleHttpMock.ServerImpl
             return parameters.ToDictionary(
                 o => o.Key,
                 o => o.Value,
-#if !NET45
-                InvarientIgnoreCaseComparer);
+#if NET_CORE
+                ignoreCaseComparer);
 #else
                 StringComparer.InvariantCultureIgnoreCase);
 #endif

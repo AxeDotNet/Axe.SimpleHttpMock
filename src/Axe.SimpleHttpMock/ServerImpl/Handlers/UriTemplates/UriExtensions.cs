@@ -34,8 +34,17 @@ namespace Axe.SimpleHttpMock.ServerImpl.Handlers.UriTemplates
             IReadOnlyList<string> pathSegments = GetSegments(uri);
             IReadOnlyCollection<string> basePathSegments = GetSegments(baseAddress);
 
-            return basePathSegments
-                .Where((t, i) => !pathSegments[i].Equals(t, StringComparison.InvariantCultureIgnoreCase)).Any()
+            bool noSameBase = basePathSegments
+                .Where((t, i) => !pathSegments[i].Equals(
+                    t,
+#if NET_CORE
+                    StringComparison.OrdinalIgnoreCase))
+#else
+                    StringComparison.InvariantCultureIgnoreCase))
+#endif
+                .Any();
+
+            return noSameBase
                 ? null
                 : pathSegments.Skip(basePathSegments.Count);
         }
@@ -66,7 +75,16 @@ namespace Axe.SimpleHttpMock.ServerImpl.Handlers.UriTemplates
             string baseAddressPath = TrimSlashes(baseAddress.AbsolutePath);
             string pathAndQuery = RemoveLeadingSlash(uri.PathAndQuery);
             if (string.IsNullOrEmpty(baseAddressPath)) { return pathAndQuery; }
-            if (!pathAndQuery.StartsWith(baseAddressPath, true, CultureInfo.InvariantCulture)) { return null; }
+            if (!pathAndQuery.StartsWith(
+#if NET_CORE
+                baseAddressPath, StringComparison.OrdinalIgnoreCase
+#else
+                baseAddressPath, true, CultureInfo.InvariantCulture
+#endif
+            ))
+            {
+                return null;
+            }
 
             return baseAddressPath.Length == pathAndQuery.Length 
                 ? string.Empty 
