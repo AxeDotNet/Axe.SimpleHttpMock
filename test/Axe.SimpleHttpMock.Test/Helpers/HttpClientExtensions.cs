@@ -4,6 +4,10 @@ using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 
+#if NET_CORE
+using System.Reflection;
+#endif
+
 namespace Axe.SimpleHttpMock.Test.Helpers
 {
     static class HttpClientExtensions
@@ -17,7 +21,13 @@ namespace Axe.SimpleHttpMock.Test.Helpers
 
             if (response.Content == null)
             {
+
+#if NET_CORE
+                var typeInfo = typeof(T).GetTypeInfo();
+                if (typeInfo.IsClass || typeInfo.IsInterface)
+#else
                 if (typeof(T).IsClass || typeof(T).IsInterface)
+#endif
                 {
                     return default(T);
                 }
