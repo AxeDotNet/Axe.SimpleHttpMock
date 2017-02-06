@@ -2,7 +2,6 @@
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
-using Axe.SimpleHttpMock.ServerImpl;
 using Axe.SimpleHttpMock.ServerImpl.Handlers;
 using Xunit;
 

@@ -28,5 +28,13 @@
         }
       }
     }
+  },
+  "configurations": {
+    "Debug": {},
+    "Release": {
+      "buildOptions": {
+        "optimize": true
+      }
+    }
   }
 }
