@@ -1,47 +1,49 @@
 {
-  "version": "0.5.2",
-  "buildOptions": {
-    "outputName": "Axe.SimpleHttpMock",
-    "compile": {
-      "include": [
-        "../../../src/Axe.SimpleHttpMock/**/*.cs"
-      ]
-    }
-  },
-  "frameworks": {
-    "netcoreapp1.1": {
-      "buildOptions": {
-        "define": ["NET_CORE"],
-        "debugType": "portable"
-      },
-      "dependencies": {
-        "Microsoft.NETCore.App": {
-          "type": "platform",
-          "version": "1.1.0"
+    "version": "1.0.0-*",
+    "buildOptions": {
+        "outputName": "Axe.SimpleHttpMock",
+        "compile": {
+            "include": [
+                "../../../src/Axe.SimpleHttpMock/**/*.cs"
+            ]
+        }
+    },
+    "frameworks": {
+        "netcoreapp1.1": {
+            "buildOptions": {
+                "define": [
+                    "NET_CORE"
+                ],
+                "debugType": "portable"
+            },
+            "dependencies": {
+                "Microsoft.NETCore.App": {
+                    "type": "platform",
+                    "version": "1.1.0"
+                },
+                "Newtonsoft.Json": "9.0.1"
+            }
         },
-        "Newtonsoft.Json": "9.0.1"
-      }
+        "net45": {
+            "buildOptions": {
+                "debugType": "full"
+            },
+            "dependencies": {
+                "System.Net.Http": "4.0.0",
+                "Newtonsoft.Json": "4.5.11"
+            }
+        }
     },
-    "net45": {
-      "buildOptions": {
-        "debugType": "full"
-      },
-      "dependencies": {
-        "System.Net.Http": "4.0.0",
-        "Newtonsoft.Json": "4.5.11"
-      }
+    "configurations": {
+        "Debug": {
+            "buildOptions": {
+                "optimize": false
+            }
+        },
+        "Release": {
+            "buildOptions": {
+                "optimize": true
+            }
+        }
     }
-  },
-  "configurations": {
-    "Debug" : {
-      "buildOptions": {
-        "optimize": false
-      }
-    },
-    "Release": {
-      "buildOptions": {
-        "optimize": true
-      }
-    }
-  }
 }
