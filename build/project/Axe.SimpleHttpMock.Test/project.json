@@ -1,36 +1,48 @@
 {
   "version": "1.0.0-*",
   "testRunner": "xunit",
-  "buildOptions": {
-    "debugType": "portable",
-    "define": ["NET_CORE"],
+  "buildOptions": {    
     "outputName": "Axe.SimpleHttpMock.Test",
     "compile": {
       "include": [
-        "../Axe.SimpleHttpMock.Test/**/*.cs"
+        "../../../test/Axe.SimpleHttpMock.Test/**/*.cs"
       ]
     }
   },
   "dependencies": {
-    "Newtonsoft.Json": "9.0.1",
     "Xunit": "2.2.0-beta2-build3300",
     "dotnet-test-xunit": "2.2.0-preview2-build1029",
-    "Axe.SimpleHttpMock.NetCore": {
+    "Axe.SimpleHttpMock": {
       "target": "project"
     }
   },
   "frameworks": {
     "netcoreapp1.1": {
+      "buildOptions": {
+        "debugType": "portable",
+        "define": ["NET_CORE"]
+      },
       "dependencies": {
         "Microsoft.NETCore.App": {
           "type": "platform",
           "version": "1.1.0"
         }
       }
+    },
+    "net451": {
+      "buildOptions": {
+        "debugType": "full"
+      },
+      "dependencies": {
+      }
     }
   },
   "configurations": {
-    "Debug": {},
+    "Debug": {
+      "buildOptions": {
+        "optimize": false
+      }
+    },
     "Release": {
       "buildOptions": {
         "optimize": true
