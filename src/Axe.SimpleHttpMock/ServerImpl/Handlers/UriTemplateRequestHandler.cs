@@ -35,14 +35,7 @@ namespace Axe.SimpleHttpMock.ServerImpl.Handlers
 
         public override MatchingResult IsMatch(HttpRequestMessage request)
         {
-            if (m_methods.Length != 0 &&
-                !m_methods.Any(m => m.Equals(request.Method.Method,
-#if NET_CORE
-                StringComparison.OrdinalIgnoreCase
-#else
-                StringComparison.InvariantCultureIgnoreCase
-#endif
-                )))
+            if (!request.IsMethodMatch(m_methods))
             {
                 return false;
             }

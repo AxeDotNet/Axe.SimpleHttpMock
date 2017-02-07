@@ -344,6 +344,21 @@ namespace Axe.SimpleHttpMock
             return Api(uriTemplate, _ => response.AsResponse(), name);
         }
 
+        public WithServiceClause RegexApi(
+            string relativePathRegex,
+            string[] methods,
+            Func<HttpRequestMessage, IDictionary<string, object>, HttpResponseMessage> responseFunc,
+            string name = null)
+        {
+            server.AddHandler(
+                new RegexRequestHandler(
+                    serviceUriPrefix,
+                    relativePathRegex,
+                    (req, @param, c) => responseFunc(req, @param),
+                    name));
+            return this;
+        }
+
         /// <summary>
         /// Finish defining current service and prepare to start another.
         /// </summary>

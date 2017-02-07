@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 
-namespace Axe.SimpleHttpMock.ServerImpl.Handlers.UriTemplates
+namespace Axe.SimpleHttpMock.ServerImpl.Handlers
 {
     static class UriExtensions
     {

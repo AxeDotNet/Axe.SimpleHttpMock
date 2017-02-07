@@ -3,7 +3,7 @@ function getVersionConfiguration() {
         "apiVersion" = 1
         "updateNumber" = 0
         "bugFix" = 0
-        "buildNumber" = 2
+        "buildNumber" = 4
         "preRelease" = $true
     }
 }
