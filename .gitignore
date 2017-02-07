@@ -250,3 +250,6 @@ paket-files/
 # JetBrains Rider
 .idea/
 *.sln.iml
+
+# Assembly Info Version instance
+src/Axe.SimpleHttpMock/Properties/AssemblyInfo.cs
