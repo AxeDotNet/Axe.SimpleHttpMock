@@ -63,6 +63,7 @@
     <Compile Include="MockHttpServerWithServiceDefaultFacts.cs" />
     <Compile Include="MockHttpServerWithServiceFacts.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RegexRequestHandlerFacts.cs" />
     <Compile Include="UriExtensionsFacts.cs" />
     <Compile Include="UriTemplateFacts.cs" />
   </ItemGroup>

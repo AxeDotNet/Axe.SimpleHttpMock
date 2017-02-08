@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
+using Axe.SimpleHttpMock.Migration;
 using Axe.SimpleHttpMock.ServerImpl;
 using Axe.SimpleHttpMock.ServerImpl.Handlers;
 
@@ -344,6 +345,17 @@ namespace Axe.SimpleHttpMock
             return Api(uriTemplate, _ => response.AsResponse(), name);
         }
 
+        /// <summary>
+        /// Add an API handler using uri regex.
+        /// </summary>
+        /// <param name="relativePathRegex">The regex which matches relative paths.</param>
+        /// <param name="methods">The accepted HTTP methods collection. This parameter is case insensitive.</param>
+        /// <param name="responseFunc">The delegate to generate stub-response.</param>
+        /// <param name="name">
+        /// The name of the handler. If there is no tracing requirement, leave this value as <c>null</c>. The default
+        /// value of this parameter is <c>null</c>.
+        /// </param>
+        /// <returns>The <see cref="WithServiceClause"/> instance.</returns>
         public WithServiceClause RegexApi(
             string relativePathRegex,
             string[] methods,
@@ -354,9 +366,56 @@ namespace Axe.SimpleHttpMock
                 new RegexRequestHandler(
                     serviceUriPrefix,
                     relativePathRegex,
+                    methods,
                     (req, @param, c) => responseFunc(req, @param),
                     name));
             return this;
+        }
+
+        /// <summary>
+        /// Add an API handler using uri regex.
+        /// </summary>
+        /// <param name="relativePathRegex">The regex which matches relative paths.</param>
+        /// <param name="method">The accepted HTTP method. This parameter is case insensitive.</param>
+        /// <param name="responseFunc">The accepted HTTP method. This parameter is case insensitive.</param>
+        /// <param name="name">
+        /// The name of the handler. If there is no tracing requirement, leave this value as <c>null</c>. The default
+        /// value of this parameter is <c>null</c>.
+        /// </param>
+        /// <returns>The <see cref="WithServiceClause"/> instance.</returns>
+        public WithServiceClause RegexApi(
+            string relativePathRegex,
+            string method,
+            Func<HttpRequestMessage, IDictionary<string, object>, HttpResponseMessage> responseFunc,
+            string name = null)
+        {
+            return RegexApi(
+                relativePathRegex,
+                method == null ? EmptyArray<string>.Instance : new[] {method}, 
+                responseFunc, 
+                name);
+        }
+
+        /// <summary>
+        /// Add an API handler using uri regex ignoring HTTP methods.
+        /// </summary>
+        /// <param name="relativePathRegex">The regex which matches relative paths.</param>
+        /// <param name="responseFunc">The accepted HTTP method. This parameter is case insensitive.</param>
+        /// <param name="name">
+        /// The name of the handler. If there is no tracing requirement, leave this value as <c>null</c>. The default
+        /// value of this parameter is <c>null</c>.
+        /// </param>
+        /// <returns>The <see cref="WithServiceClause"/> instance.</returns>
+        public WithServiceClause RegexApi(
+            string relativePathRegex,
+            Func<HttpRequestMessage, IDictionary<string, object>, HttpResponseMessage> responseFunc,
+            string name = null)
+        {
+            return RegexApi(
+                relativePathRegex,
+                (string[]) null,
+                responseFunc,
+                name);
         }
 
         /// <summary>
