@@ -7,11 +7,11 @@ namespace Axe.SimpleHttpMock.ServerImpl.Handlers.UriTemplates
     class UriTemplatePathMatcher
     {
         static readonly char[] Slashes = { '\\', '/' };
-        readonly UriTemplateElement[] m_elements;
+        readonly UriTemplateElement[] elements;
 
         public UriTemplatePathMatcher(Uri fakeBaseAddressTemplate)
         {
-            m_elements = fakeBaseAddressTemplate.Segments
+            elements = fakeBaseAddressTemplate.Segments
                 .Select(s => Uri.UnescapeDataString(s).Trim(Slashes))
                 .Select(s => new UriTemplateElement(s))
                 .Skip(1)
@@ -20,7 +20,7 @@ namespace Axe.SimpleHttpMock.ServerImpl.Handlers.UriTemplates
 
         public MatchingResult IsMatch(string[] pathSegments)
         {
-            if (pathSegments.Length != m_elements.Length)
+            if (pathSegments.Length != elements.Length)
             {
                 return false;
             }
@@ -28,7 +28,7 @@ namespace Axe.SimpleHttpMock.ServerImpl.Handlers.UriTemplates
             var capturedVariables = new List<KeyValuePair<string, object>>();
             for (int i = 0; i < pathSegments.Length; ++i)
             {
-                UriTemplateElement templateSegment = m_elements[i];
+                UriTemplateElement templateSegment = elements[i];
                 string pathSegment = pathSegments[i];
                 if (!templateSegment.IsMatch(pathSegment))
                 {

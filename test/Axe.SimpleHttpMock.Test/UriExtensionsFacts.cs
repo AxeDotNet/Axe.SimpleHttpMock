@@ -50,37 +50,31 @@ namespace Axe.SimpleHttpMock.Test
             Assert.Null(new Uri(baseAddress).GetRelativeUri(new Uri(notMatchedUri)));
         }
 
-        public static IEnumerable<object[]> NotMatchedBaseAddressCases
+        public static IEnumerable<object[]> NotMatchedBaseAddressCases => new[]
         {
-            get
-            {
-                return new[]
-                {
-                    new object[] {"http://www.base.com", "http://www.another.com"},
-                    new object[] {"http://www.base.com/not-match", "http://www.base.com/path"},
-                    new object[] {"http://www.base.com:80", "http://www.base.com:8080/path/subpath"},
-                    new object[] {"http://www.base.com/path/subpath", "http://www.base.com/not-match/path/subpath/third-level"},
-                    new object[] {"http://twer:password@www.base.com/path/subpath?does-not=care", "http://twer:not-match@www.base.com/path/subpath/third-level"}
-                };
-            }
-        }
+            new object[] {"http://www.base.com", "http://www.another.com"},
+            new object[] {"http://www.base.com/not-match", "http://www.base.com/path"},
+            new object[] {"http://www.base.com:80", "http://www.base.com:8080/path/subpath"},
+            new object[] {"http://www.base.com/path/subpath", "http://www.base.com/not-match/path/subpath/third-level"},
+            new object[] {"http://twer:password@www.base.com/path/subpath?does-not=care", "http://twer:not-match@www.base.com/path/subpath/third-level"}
+        };
 
         public static IEnumerable<object[]> MatchedBaseAddressSegmentCases
         {
-            get { return matchedCases.Select(c => c.Take(3).ToArray()); }
+            get { return MatchedCases.Select(c => c.Take(3).ToArray()); }
         }
 
         public static IEnumerable<object[]> MatchedBaseAddressCases
         {
-            get { return matchedCases.Select(c => c.Take(2).ToArray()); }
+            get { return MatchedCases.Select(c => c.Take(2).ToArray()); }
         }
 
         public static IEnumerable<object[]> RelativeUriCases
         {
-            get { return matchedCases.Select(c => new[] { c[0], c[1], c[3] }); }
+            get { return MatchedCases.Select(c => new[] { c[0], c[1], c[3] }); }
         }
 
-        static readonly IEnumerable<object[]> matchedCases = new[]
+        static readonly IEnumerable<object[]> MatchedCases = new[]
         {
             new object[] {"http://www.base.com", "http://www.base.com", new string[0], string.Empty},
             new object[] {"http://www.base.com", "http://www.base.com/", new string[0], string.Empty},

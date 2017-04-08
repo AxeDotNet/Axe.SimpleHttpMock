@@ -5,16 +5,16 @@ namespace Axe.SimpleHttpMock.ServerImpl.Handlers.UriTemplates
 {
     class UriTemplate
     {
-        static readonly Uri fakeBaseAddress = new Uri("http://axe.simplehttp.mock");
+        static readonly Uri FakeBaseAddress = new Uri("http://axe.simplehttp.mock");
         
-        readonly UriTemplatePathMatcher m_uriTemplatePathMatcher;
-        readonly UriQueryStringTemplateMatcher m_uriQueryStringTemplateMatcher;
+        readonly UriTemplatePathMatcher uriTemplatePathMatcher;
+        readonly UriQueryStringTemplateMatcher uriQueryStringTemplateMatcher;
 
         public UriTemplate(string template)
         {
-            var fakeBaseAddressTemplate = new Uri(fakeBaseAddress, template);
-            m_uriTemplatePathMatcher = new UriTemplatePathMatcher(fakeBaseAddressTemplate);
-            m_uriQueryStringTemplateMatcher = new UriQueryStringTemplateMatcher(fakeBaseAddressTemplate);
+            var fakeBaseAddressTemplate = new Uri(FakeBaseAddress, template);
+            uriTemplatePathMatcher = new UriTemplatePathMatcher(fakeBaseAddressTemplate);
+            uriQueryStringTemplateMatcher = new UriQueryStringTemplateMatcher(fakeBaseAddressTemplate);
         }
 
         public MatchingResult IsMatch(Uri baseAddress, Uri uri)
@@ -25,10 +25,10 @@ namespace Axe.SimpleHttpMock.ServerImpl.Handlers.UriTemplates
                 return false;
             }
 
-            MatchingResult pathMatchingResult = m_uriTemplatePathMatcher.IsMatch(relativePathToExamine);
+            MatchingResult pathMatchingResult = uriTemplatePathMatcher.IsMatch(relativePathToExamine);
             if (!pathMatchingResult) { return false; }
 
-            MatchingResult queryMatchingResult = m_uriQueryStringTemplateMatcher.IsMatch(uri.Query);
+            MatchingResult queryMatchingResult = uriQueryStringTemplateMatcher.IsMatch(uri.Query);
             if (!queryMatchingResult) { return false; }
 
             return new MatchingResult(

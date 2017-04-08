@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading;
-using Axe.SimpleHttpMock.ServerImpl.Handlers.UriTemplates;
 
 namespace Axe.SimpleHttpMock.ServerImpl.Handlers
 {

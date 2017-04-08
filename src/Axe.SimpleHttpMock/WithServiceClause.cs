@@ -367,7 +367,7 @@ namespace Axe.SimpleHttpMock
                     serviceUriPrefix,
                     relativePathRegex,
                     methods,
-                    (req, @param, c) => responseFunc(req, @param),
+                    (req, param, c) => responseFunc(req, param),
                     name));
             return this;
         }

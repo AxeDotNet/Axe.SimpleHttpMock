@@ -9,17 +9,17 @@ namespace Axe.SimpleHttpMock.ServerImpl.ContentFormatter
     class JsonContentFormatter : IContentSerializer, IContentDeserializer
     {
         const string MediaType = "application/json";
-        readonly Encoding m_encoding;
+        readonly Encoding encoding;
         
         public JsonContentFormatter(Encoding encoding = null)
         {
-            m_encoding = encoding ?? Encoding.UTF8;
+            this.encoding = encoding ?? Encoding.UTF8;
         }
         
         public HttpContent Format(object payload)
         {
             string serialized = JsonConvert.SerializeObject(payload);
-            return new StringContent(serialized, m_encoding, MediaType);
+            return new StringContent(serialized, encoding, MediaType);
         }
 
         public Task<object> DeserializeAsync(HttpContent content)
