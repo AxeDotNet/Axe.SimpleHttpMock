@@ -10,14 +10,7 @@ namespace Axe.SimpleHttpMock.ServerImpl.Handlers
         {
             bool ignoringMethods = methods == null || methods.Length == 0;
             if (ignoringMethods) { return true; }
-            return methods.Any(m => m.Equals(
-                requestMessage.Method.Method,
-#if NET_CORE
-                StringComparison.OrdinalIgnoreCase
-#else
-                StringComparison.InvariantCultureIgnoreCase
-#endif
-                ));
+            return methods.Any(m => m.Equals(requestMessage.Method.Method, StringComparison.OrdinalIgnoreCase));
         }
     }
 }

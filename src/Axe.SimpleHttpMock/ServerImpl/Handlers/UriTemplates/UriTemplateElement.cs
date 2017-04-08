@@ -42,12 +42,7 @@ namespace Axe.SimpleHttpMock.ServerImpl.Handlers.UriTemplates
 
         public bool IsMatch(string pathSegment)
         {
-            return IsVariable ||
-#if !NET_CORE
-                Value.Equals(pathSegment, StringComparison.InvariantCultureIgnoreCase);
-#else
-                Value.Equals(pathSegment, StringComparison.OrdinalIgnoreCase);
-#endif
+            return IsVariable || Value.Equals(pathSegment, StringComparison.OrdinalIgnoreCase);
         }
     }
 }

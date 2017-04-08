@@ -35,13 +35,7 @@ namespace Axe.SimpleHttpMock.ServerImpl.Handlers
             IReadOnlyCollection<string> basePathSegments = GetSegments(baseAddress);
 
             bool noSameBase = basePathSegments
-                .Where((t, i) => !pathSegments[i].Equals(
-                    t,
-#if NET_CORE
-                    StringComparison.OrdinalIgnoreCase))
-#else
-                    StringComparison.InvariantCultureIgnoreCase))
-#endif
+                .Where((t, i) => !pathSegments[i].Equals(t, StringComparison.OrdinalIgnoreCase))
                 .Any();
 
             return noSameBase
@@ -75,13 +69,7 @@ namespace Axe.SimpleHttpMock.ServerImpl.Handlers
             string baseAddressPath = TrimSlashes(baseAddress.AbsolutePath);
             string pathAndQuery = RemoveLeadingSlash(uri.PathAndQuery);
             if (string.IsNullOrEmpty(baseAddressPath)) { return pathAndQuery; }
-            if (!pathAndQuery.StartsWith(
-#if NET_CORE
-                baseAddressPath, StringComparison.OrdinalIgnoreCase
-#else
-                baseAddressPath, true, CultureInfo.InvariantCulture
-#endif
-            ))
+            if (!pathAndQuery.StartsWith(baseAddressPath, StringComparison.OrdinalIgnoreCase))
             {
                 return null;
             }

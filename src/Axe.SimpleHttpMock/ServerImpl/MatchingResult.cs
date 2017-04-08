@@ -10,27 +10,6 @@ namespace Axe.SimpleHttpMock.ServerImpl
     /// </summary>
     public sealed class MatchingResult
     {
-#if NET_CORE
-        class IgnoreCaseComparer : IEqualityComparer<string>
-        {
-            public bool Equals(string x, string y)
-            {
-                if (x == y) { return true; }
-                if (x == null) { return false; }
-                if (y == null) { return false; }
-                return x.Equals(y, StringComparison.OrdinalIgnoreCase);
-            }
-
-            public int GetHashCode(string obj)
-            {
-                if (obj == null) { return 0; }
-                return obj.ToLowerInvariant().GetHashCode();
-            }
-        }
-
-        static readonly IgnoreCaseComparer ignoreCaseComparer = new IgnoreCaseComparer();
-#endif
-
         /// <summary>
         /// Get if current <see cref="IRequestHandler"/> instance can handle certain
         /// HTTP request message. If it can handle the message, returns <c>true</c>,
@@ -68,11 +47,7 @@ namespace Axe.SimpleHttpMock.ServerImpl
             return parameters.ToDictionary(
                 o => o.Key,
                 o => o.Value,
-#if NET_CORE
-                ignoreCaseComparer);
-#else
-                StringComparer.InvariantCultureIgnoreCase);
-#endif
+                StringComparer.OrdinalIgnoreCase);
         }
 
         /// <summary>

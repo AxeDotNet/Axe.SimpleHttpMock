@@ -1,11 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.26228.12
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Axe.SimpleHttpMock", "src\Axe.SimpleHttpMock\Axe.SimpleHttpMock.csproj", "{9EF06743-3D85-496B-A3E9-5650B12AB8B6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Axe.SimpleHttpMock", "src\Axe.SimpleHttpMock\Axe.SimpleHttpMock.csproj", "{31FEAC50-B80A-442E-B350-20CCB16B0C41}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Axe.SimpleHttpMock.Test", "test\Axe.SimpleHttpMock.Test\Axe.SimpleHttpMock.Test.csproj", "{E2DB6B71-AD34-4BB5-A241-FFC2C98A6AA5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Axe.SimpleHttpMock.Test", "test\Axe.SimpleHttpMock.Test\Axe.SimpleHttpMock.Test.csproj", "{5B20C682-3CE1-4BFA-9EA4-379779D72E1A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -13,14 +13,14 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{9EF06743-3D85-496B-A3E9-5650B12AB8B6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{9EF06743-3D85-496B-A3E9-5650B12AB8B6}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{9EF06743-3D85-496B-A3E9-5650B12AB8B6}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{9EF06743-3D85-496B-A3E9-5650B12AB8B6}.Release|Any CPU.Build.0 = Release|Any CPU
-		{E2DB6B71-AD34-4BB5-A241-FFC2C98A6AA5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E2DB6B71-AD34-4BB5-A241-FFC2C98A6AA5}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E2DB6B71-AD34-4BB5-A241-FFC2C98A6AA5}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E2DB6B71-AD34-4BB5-A241-FFC2C98A6AA5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{31FEAC50-B80A-442E-B350-20CCB16B0C41}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{31FEAC50-B80A-442E-B350-20CCB16B0C41}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{31FEAC50-B80A-442E-B350-20CCB16B0C41}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{31FEAC50-B80A-442E-B350-20CCB16B0C41}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5B20C682-3CE1-4BFA-9EA4-379779D72E1A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5B20C682-3CE1-4BFA-9EA4-379779D72E1A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5B20C682-3CE1-4BFA-9EA4-379779D72E1A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5B20C682-3CE1-4BFA-9EA4-379779D72E1A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
