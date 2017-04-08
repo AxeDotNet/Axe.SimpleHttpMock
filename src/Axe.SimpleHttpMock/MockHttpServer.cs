@@ -14,9 +14,9 @@ namespace Axe.SimpleHttpMock
     /// </summary>
     public class MockHttpServer : HttpMessageHandler
     {
-        readonly List<IRequestHandler> m_handlers = new List<IRequestHandler>(32);
-        readonly List<IRequestHandler> m_defaultHandlers = new List<IRequestHandler>();
-        readonly Dictionary<string, IRequestHandler> m_namedHandlers = new Dictionary<string, IRequestHandler>();
+        readonly List<IRequestHandler> handlers = new List<IRequestHandler>(32);
+        readonly List<IRequestHandler> defaultHandlers = new List<IRequestHandler>();
+        readonly Dictionary<string, IRequestHandler> namedHandlers = new Dictionary<string, IRequestHandler>();
         IServerLogger logger = new DummyLogger();
 
         /// <summary>
@@ -29,10 +29,10 @@ namespace Axe.SimpleHttpMock
         /// </remarks>
         public void AddHandler(IRequestHandler handler)
         {
-            m_handlers.Add(handler);
+            handlers.Add(handler);
             if (!string.IsNullOrEmpty(handler.Name))
             {
-                m_namedHandlers.Add(handler.Name, handler);
+                namedHandlers.Add(handler.Name, handler);
             }
         }
 
@@ -43,10 +43,10 @@ namespace Axe.SimpleHttpMock
         /// <param name="handler">The default request handler.</param>
         public void AddDefaultHandler(IRequestHandler handler)
         {
-            m_defaultHandlers.Add(handler);
+            defaultHandlers.Add(handler);
             if (!string.IsNullOrEmpty(handler.Name))
             {
-                m_namedHandlers.Add(handler.Name, handler);
+                namedHandlers.Add(handler.Name, handler);
             }
         }
         
@@ -69,10 +69,10 @@ namespace Axe.SimpleHttpMock
             string requestBriefing = $"{request.Method.Method} {request.RequestUri}";
             Logger.Log($"[Mock Server] Receiving request: {requestBriefing}");
 
-            KeyValuePair<IRequestHandler, MatchingResult>? match = GetMatchedHandler(m_handlers, request);
+            KeyValuePair<IRequestHandler, MatchingResult>? match = GetMatchedHandler(handlers, request);
             if (match == null)
             {
-                match = GetMatchedHandler(m_defaultHandlers, request);
+                match = GetMatchedHandler(defaultHandlers, request);
                 if (match == null)
                 {
                     Logger.Log($"[Mock Server] Cannot find matched handler for request: {requestBriefing}");
@@ -124,23 +124,15 @@ namespace Axe.SimpleHttpMock
         /// </exception>
         public IServerLogger Logger
         {
-            get { return logger; }
-            set
-            {
-                if (value == null)
-                {
-                    throw new ArgumentNullException(nameof(value));
-                }
-
-                logger = value;
-            }
+            get => logger;
+            set => logger = value ?? throw new ArgumentNullException(nameof(value));
         }
 
         IRequestHandlerTracer GetNamedHandlerTracer(string name)
         {
-            if (m_namedHandlers.ContainsKey(name))
+            if (namedHandlers.ContainsKey(name))
             {
-                return m_namedHandlers[name];
+                return namedHandlers[name];
             }
 
             throw new KeyNotFoundException(

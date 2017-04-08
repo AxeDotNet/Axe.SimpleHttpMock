@@ -32,7 +32,7 @@ namespace Axe.SimpleHttpMock
                     && verifyFunc(c.Parameters[parameter]));
             if (matchParameter) { return; }
             throw new VerifyException(
-                $"Either no parameter has name \"{parameter}\" or the parameter value did not pass the verify process");
+                $"Either no parameter has name \"{parameter}\" or the parameter value did not pass the verify process for API named \"{tracer.Name}\"");
         }
 
         /// <summary>
@@ -67,7 +67,7 @@ namespace Axe.SimpleHttpMock
         public static void VerifyHasBeenCalled(this IRequestHandlerTracer tracer)
         {
             if (tracer.CallingHistories.Count > 0) { return; }
-            throw new VerifyException("The API is not called, which does not match your expectation.");
+            throw new VerifyException($"The API \"{tracer.Name}\" is not called, which does not match your expectation.");
         }
 
         /// <summary>
@@ -83,7 +83,7 @@ namespace Axe.SimpleHttpMock
             int actualCalledCount = tracer.CallingHistories.Count;
             if (actualCalledCount == times) { return; }
             throw new VerifyException(
-                $"The API has been called for {actualCalledCount} time(s) rather than {times} time(s).");
+                $"The API has been called for {actualCalledCount} time(s) rather than {times} time(s) for API named \"{tracer.Name}\".");
         }
 
         /// <summary>
@@ -97,7 +97,7 @@ namespace Axe.SimpleHttpMock
         {
             int actualCalledCount = tracer.CallingHistories.Count;
             if (actualCalledCount == 0) { return; }
-            throw new VerifyException($"The API has been called for {actualCalledCount} time(s). But your expectation is not being called.");
+            throw new VerifyException($"The API \"{tracer.Name}\" has been called for {actualCalledCount} time(s). But your expectation is not being called.");
         }
 
         /// <summary>

@@ -15,7 +15,7 @@ namespace Axe.SimpleHttpMock.ServerImpl
     /// </summary>
     public abstract class RequestHandlerBase : IRequestHandler
     {
-        readonly ConcurrentQueue<CallingHistoryContext> m_callingHistories 
+        readonly ConcurrentQueue<CallingHistoryContext> callingHistories 
             = new ConcurrentQueue<CallingHistoryContext>();
 
         /// <summary>
@@ -44,7 +44,7 @@ namespace Axe.SimpleHttpMock.ServerImpl
         /// <remarks>
         /// If the <see cref="IRequestHandlerTracer.Name"/> is <c>null</c>, This property will returns empty collection.
         /// </remarks>
-        public IReadOnlyCollection<CallingHistoryContext> CallingHistories => m_callingHistories.ToArray();
+        public IReadOnlyCollection<CallingHistoryContext> CallingHistories => callingHistories.ToArray();
 
         /// <summary>
         /// Before the request can go into the handler. It must be checked if current handler
@@ -85,7 +85,7 @@ namespace Axe.SimpleHttpMock.ServerImpl
             {
                 HttpRequestMessage cloned = await CloneHttpRequestMessageAsync(request).ConfigureAwait(false);
                 actualLogger.Log($"[Handler] Record calling history with name '{Name}'");
-                m_callingHistories.Enqueue(new CallingHistoryContext(cloned, parameters));
+                callingHistories.Enqueue(new CallingHistoryContext(cloned, parameters));
             }
 
             try

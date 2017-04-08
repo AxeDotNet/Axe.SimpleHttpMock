@@ -11,8 +11,8 @@ namespace Axe.SimpleHttpMock.ServerImpl.Handlers
     /// </summary>
     public sealed class DelegatedRequestHandler : RequestHandlerBase
     {
-        readonly RequestHandlingFunc m_handleFunc;
-        readonly MatchingFunc m_matcher;
+        readonly RequestHandlingFunc handleFunc;
+        readonly MatchingFunc matcher;
 
         /// <summary>
         /// Create a <see cref="DelegatedRequestHandler"/> instance.
@@ -35,18 +35,8 @@ namespace Axe.SimpleHttpMock.ServerImpl.Handlers
         public DelegatedRequestHandler(MatchingFunc matcher, RequestHandlingFunc handleFunc, string name)
             : base(name)
         {
-            if (handleFunc == null)
-            {
-                throw new ArgumentNullException(nameof(handleFunc));
-            }
-
-            if (matcher == null)
-            {
-                throw new ArgumentNullException(nameof(matcher));
-            }
-
-            m_handleFunc = handleFunc;
-            m_matcher = matcher;
+            this.handleFunc = handleFunc ?? throw new ArgumentNullException(nameof(handleFunc));
+            this.matcher = matcher ?? throw new ArgumentNullException(nameof(matcher));
         }
 
         /// <summary>
@@ -59,7 +49,7 @@ namespace Axe.SimpleHttpMock.ServerImpl.Handlers
         /// </returns>
         public override MatchingResult IsMatch(HttpRequestMessage request)
         {
-            return m_matcher(request);
+            return matcher(request);
         }
 
         /// <summary>
@@ -74,7 +64,7 @@ namespace Axe.SimpleHttpMock.ServerImpl.Handlers
             IDictionary<string, object> parameters,
             CancellationToken cancellationToken)
         {
-            return m_handleFunc(request, parameters, cancellationToken);
+            return handleFunc(request, parameters, cancellationToken);
         }
     }
 }

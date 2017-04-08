@@ -10,7 +10,7 @@ namespace Axe.SimpleHttpMock.ServerImpl.Handlers
 {
     class RegexRequestHandler : RequestHandlerBase
     {
-        readonly string[] m_methods;
+        readonly string[] methods;
         readonly RequestHandlingFunc handlingFunc;
         readonly Uri baseAddress;
         readonly Regex relativeUriRegex;
@@ -26,7 +26,7 @@ namespace Axe.SimpleHttpMock.ServerImpl.Handlers
             relativeUriRegex.ThrowIfNull(nameof(relativeUriRegex));
             handlingFunc.ThrowIfNull(nameof(handlingFunc));
 
-            m_methods = methods ?? EmptyArray<string>.Instance;
+            this.methods = methods ?? EmptyArray<string>.Instance;
             this.handlingFunc = handlingFunc;
             this.baseAddress = new Uri(baseAddress);
             this.relativeUriRegex = new Regex(relativeUriRegex);
@@ -34,7 +34,7 @@ namespace Axe.SimpleHttpMock.ServerImpl.Handlers
 
         public override MatchingResult IsMatch(HttpRequestMessage request)
         {
-            if (!request.IsMethodMatch(m_methods))
+            if (!request.IsMethodMatch(methods))
             {
                 return false;
             }

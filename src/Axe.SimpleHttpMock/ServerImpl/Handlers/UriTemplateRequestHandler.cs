@@ -9,10 +9,10 @@ namespace Axe.SimpleHttpMock.ServerImpl.Handlers
 {
     class UriTemplateRequestHandler : RequestHandlerBase
     {
-        readonly RequestHandlingFunc m_handlingFunc;
-        readonly string[] m_methods;
-        readonly UriTemplate m_uriTemplate;
-        readonly Uri m_baseAddress;
+        readonly RequestHandlingFunc handlingFunc;
+        readonly string[] methods;
+        readonly UriTemplate uriTemplate;
+        readonly Uri baseAddress;
 
         public UriTemplateRequestHandler(
             string baseAddress, 
@@ -26,20 +26,20 @@ namespace Axe.SimpleHttpMock.ServerImpl.Handlers
             template.ThrowIfNull(nameof(template));
             handlingFunc.ThrowIfNull(nameof(handlingFunc));
 
-            m_handlingFunc = handlingFunc;
-            m_methods = methods ?? EmptyArray<string>.Instance;
-            m_uriTemplate = new UriTemplate(template);
-            m_baseAddress = new Uri(baseAddress, UriKind.Absolute);
+            this.handlingFunc = handlingFunc;
+            this.methods = methods ?? EmptyArray<string>.Instance;
+            uriTemplate = new UriTemplate(template);
+            this.baseAddress = new Uri(baseAddress, UriKind.Absolute);
         }
 
         public override MatchingResult IsMatch(HttpRequestMessage request)
         {
-            if (!request.IsMethodMatch(m_methods))
+            if (!request.IsMethodMatch(methods))
             {
                 return false;
             }
 
-            return m_uriTemplate.IsMatch(m_baseAddress, request.RequestUri);
+            return uriTemplate.IsMatch(baseAddress, request.RequestUri);
         }
 
         protected override HttpResponseMessage CreateResponse(
@@ -47,7 +47,7 @@ namespace Axe.SimpleHttpMock.ServerImpl.Handlers
             IDictionary<string, object> parameters,
             CancellationToken cancellationToken)
         {
-            return m_handlingFunc(request, parameters, cancellationToken);
+            return handlingFunc(request, parameters, cancellationToken);
         }
     }
 }

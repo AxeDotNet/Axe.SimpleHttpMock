@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 
 namespace Axe.SimpleHttpMock.ServerImpl.Handlers
@@ -9,7 +8,7 @@ namespace Axe.SimpleHttpMock.ServerImpl.Handlers
     {
         static readonly char[] Slashes = { '\\', '/' };
 
-        static readonly char[] queryMark = { '?' };
+        static readonly char[] QueryMark = { '?' };
 
         static bool IsUriPrefixMatch(Uri baseAddressUri, Uri uriToExamine)
         {
@@ -81,7 +80,7 @@ namespace Axe.SimpleHttpMock.ServerImpl.Handlers
 
         public static IEnumerable<KeyValuePair<string, string>> GetQueryCollection(this string queryString)
         {
-            var query = queryString.TrimStart(queryMark);
+            var query = queryString.TrimStart(QueryMark);
             if (string.IsNullOrEmpty(query))
             {
                 yield break;
