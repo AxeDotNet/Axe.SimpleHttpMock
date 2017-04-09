@@ -146,3 +146,9 @@ public async void should_get_request_content_from_calling_history()
 The indexer method for `MockHttpServer` actually returns a collection of calling history for every named API. So it can be easily extendable to verify much more.
 
 Enjoy!
+
+## Release Note
+
+### 1.0.1
+
+* Use local JSON serialization settings to avoid pollution.
