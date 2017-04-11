@@ -1,7 +1,17 @@
 language: csharp
-dist: trusty
-mono: none
-sudo: required
-dotnet: 1.0.1
-script:
-  - ./travis_build_and_test.sh --quiet verify
+solution: Axe.SimpleHttpMock.sln
+
+env:
+  global:
+    - CONFIGURATION=Release
+
+matrix:
+  include:
+    - os: linux
+      dist: trusty # Ubuntu 14.04
+      dotnet: 1.0.1
+      mono: none
+      env: DOTNETCORE=1
+      sudo: required
+
+script: ./travis_build_and_test_.sh
