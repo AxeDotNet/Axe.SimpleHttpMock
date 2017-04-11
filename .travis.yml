@@ -1,6 +1,7 @@
 language: csharp
 dist: trusty
 mono: none
+sudo: required
 dotnet: 1.0.1
 script:
   - ./travis_build_and_test.sh --quiet verify
