@@ -14,4 +14,4 @@ matrix:
       env: DOTNETCORE=1
       sudo: required
 
-script: ./travis_build_and_test_.sh
+script: ./travis_build_and_test.sh
