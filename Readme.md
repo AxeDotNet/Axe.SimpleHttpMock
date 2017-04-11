@@ -153,6 +153,7 @@ Enjoy!
 
 ## Release Note
 
-### 1.0.1
+### 1.0.2
 
 * Use local JSON serialization settings to avoid pollution.
+* Mark unused methods as obsolete for IContentDeserializer.
