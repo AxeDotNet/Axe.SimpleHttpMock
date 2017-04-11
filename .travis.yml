@@ -14,4 +14,7 @@ matrix:
       env: DOTNETCORE=1
       sudo: required
 
-script: ./travis_build_and_test.sh
+script:
+  - dotnet restore
+  - dotnet build
+  - dotnet test ./test/Axe.SimpleHttpMock.Test/Axe.SimpleHttpMock.Test.csproj
