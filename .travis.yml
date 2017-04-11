@@ -17,4 +17,4 @@ matrix:
 script:
   - dotnet restore
   - dotnet build
-  - dotnet test ./test/Axe.SimpleHttpMock.Test/Axe.SimpleHttpMock.Test.csproj
+  - dotnet test ./test/Axe.SimpleHttpMock.Test/Axe.SimpleHttpMock.Test.csproj -f netcoreapp1.1
