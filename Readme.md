@@ -1,5 +1,9 @@
 # Axe.SimpleHttpMock is a library to ease testing against external HTTP systems
 
+## Latest status
+
+[![Build Status](https://travis-ci.org/AxeDotNet/Axe.SimpleHttpMock.svg?branch=master)](https://travis-ci.org/AxeDotNet/Axe.SimpleHttpMock)
+
 ## Advantages
 
 * No real socket lisetening server needed.
