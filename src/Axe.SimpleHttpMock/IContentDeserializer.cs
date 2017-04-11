@@ -1,4 +1,5 @@
-﻿using System.Net.Http;
+﻿using System;
+using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace Axe.SimpleHttpMock
@@ -13,6 +14,7 @@ namespace Axe.SimpleHttpMock
         /// </summary>
         /// <param name="content"><see cref="HttpContent"/> instance.</param>
         /// <returns>A task with deserialized object.</returns>
+        [Obsolete("This method will be removed in the upcoming release. Please use DeserializeAsync<T>(HttpContent) instead.")]
         Task<object> DeserializeAsync(HttpContent content);
 
         /// <summary>
@@ -30,6 +32,7 @@ namespace Axe.SimpleHttpMock
         /// <param name="content">The <see cref="HttpContent"/> instance.</param>
         /// <param name="template">The template object.</param>
         /// <returns>A task with deserialized object.</returns>
+        [Obsolete("This method will be removed in the upcoming release. Please use DeserializeAsync<T>(HttpContent) instead.")]
         Task<T> DeserializeAsync<T>(HttpContent content, T template);
     }
 }
