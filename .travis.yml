@@ -9,4 +9,4 @@ env:
 
 script:
   - dotnet restore
-  - dotnet test ./test/Axe.SimpleHttpMock.Test/Axe.SimpleHttpMock.Test.csproj -f netcoreapp1.1
+  - dotnet test ./test/Axe.SimpleHttpMock.Test/Axe.SimpleHttpMock.Test.csproj -f netcoreapp2.1
