@@ -1,18 +1,11 @@
 language: csharp
-solution: Axe.SimpleHttpMock.sln
+mono: none
+dotnet: 2.0.0
+dist: trusty
 
 env:
   global:
     - CONFIGURATION=Release
-
-matrix:
-  include:
-    - os: linux
-      dist: trusty # Ubuntu 14.04
-      dotnet: 1.0.1
-      mono: none
-      env: DOTNETCORE=1
-      sudo: required
 
 script:
   - dotnet restore
