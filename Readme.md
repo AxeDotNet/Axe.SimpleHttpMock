@@ -2,7 +2,10 @@
 
 ## Latest status
 
-[![Build Status](https://travis-ci.org/AxeDotNet/Axe.SimpleHttpMock.svg?branch=master)](https://travis-ci.org/AxeDotNet/Axe.SimpleHttpMock)
+|Building Env|Status|
+|---|---|
+|Linux|[![Build Status](https://travis-ci.org/AxeDotNet/Axe.SimpleHttpMock.svg?branch=master)](https://travis-ci.org/AxeDotNet/Axe.SimpleHttpMock)|
+|Windows|[![Build Status](https://ci.appveyor.com/api/projects/status/4hgq4jcnrvybx56b?svg=true)](https://ci.appveyor.com/project/lxconan/axe-simplehttpmock)|
 
 ## Advantages
 
