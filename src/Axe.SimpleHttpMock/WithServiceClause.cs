@@ -33,7 +33,12 @@ namespace Axe.SimpleHttpMock
                 throw new ArgumentNullException(nameof(serviceUriPrefix));
             }
 
+#if !NET_CORE
             var uri = new Uri(serviceUriPrefix, UriKind.Absolute);
+#else
+            var uri = new Uri(serviceUriPrefix, UriKind.RelativeOrAbsolute);
+            if (!uri.IsAbsoluteUri) { throw new UriFormatException($"The uri {uri} is not absolute uri."); }
+#endif
 
             this.server = server;
             this.serviceUriPrefix = uri.AbsoluteUri;

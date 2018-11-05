@@ -130,7 +130,7 @@ public async void should_get_request_content_from_calling_history()
 {
     var externalSystems = new MockHttpServer();
     externalSystems.WithService("http://www.base.com")
-        .Api("login", "POST", HttpStatusCode.OK, "login");
+        .Api("login", "POST", HttpStatusCode.OK, "login_operation");
 
     var client = new HttpClient(externalSystems);
 
@@ -139,7 +139,7 @@ public async void should_get_request_content_from_calling_history()
         new { username = "n", password = "p" });
 
     Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-    var actualRequestContent = await externalSystems["login"].SingleOrDefaultRequestContentAsync(
+    var actualRequestContent = await externalSystems["login_operation"].SingleOrDefaultRequestContentAsync(
         new { username = string.Empty, password = string.Empty });
 
     Assert.Equal("n", actualRequestContent.username);
