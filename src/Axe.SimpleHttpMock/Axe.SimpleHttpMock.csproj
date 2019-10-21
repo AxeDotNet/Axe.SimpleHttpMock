@@ -19,7 +19,7 @@
     <GenerateAssemblyCopyrightAttribute>false</GenerateAssemblyCopyrightAttribute>
     <GenerateAssemblyVersionAttribute>false</GenerateAssemblyVersionAttribute>
     <GenerateAssemblyFileVersionAttribute>false</GenerateAssemblyFileVersionAttribute>
-    <Version>1.0.4</Version>
+    <Version>1.0.5  </Version>
   </PropertyGroup>
   
   <PropertyGroup Condition=" '$(TargetFramework)' == 'netstandard1.6' ">
