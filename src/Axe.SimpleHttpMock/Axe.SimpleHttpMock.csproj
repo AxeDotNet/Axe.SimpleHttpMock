@@ -4,7 +4,7 @@
     <Description>A mock library for HTTP request via HttpClient. Simple, fast, no HTTP server needed, parallel test executing enabled.</Description>
     <Copyright>Copyright Liu Xia 2016-2017</Copyright>
     <Authors>Liu Xia</Authors>
-    <TargetFrameworks>netstandard1.6;net45</TargetFrameworks>
+    <TargetFrameworks>netstandard1.6;net45;net461;netstandard2.0</TargetFrameworks>
     <AssemblyName>Axe.SimpleHttpMock</AssemblyName>
     <PackageId>Axe.SimpleHttpMock</PackageId>
     <PackageTags>HttpClient;Mock</PackageTags>
@@ -19,7 +19,25 @@
     <GenerateAssemblyCopyrightAttribute>false</GenerateAssemblyCopyrightAttribute>
     <GenerateAssemblyVersionAttribute>false</GenerateAssemblyVersionAttribute>
     <GenerateAssemblyFileVersionAttribute>false</GenerateAssemblyFileVersionAttribute>
-    <Version>1.0.3</Version>
+    <Version>1.0.4</Version>
+  </PropertyGroup>
+  
+  <PropertyGroup Condition=" '$(TargetFramework)' == 'netstandard1.6' ">
+    <DefineConstants>$(DefineConstants);NET_CORE</DefineConstants>
+    <DebugType>portable</DebugType>
+  </PropertyGroup>
+
+  <PropertyGroup Condition=" '$(TargetFramework)' == 'netstandard2.0' ">
+    <DefineConstants>$(DefineConstants);NET_CORE</DefineConstants>
+    <DebugType>portable</DebugType>
+  </PropertyGroup>
+
+  <PropertyGroup Condition=" '$(TargetFramework)' == 'net45' ">
+    <DebugType>full</DebugType>
+  </PropertyGroup>
+
+  <PropertyGroup Condition=" '$(TargetFramework)' == 'net461' ">
+    <DebugType>full</DebugType>
   </PropertyGroup>
 
 
@@ -27,25 +45,21 @@
     <PackageReference Include="Newtonsoft.Json" Version="9.0.1" />
   </ItemGroup>
 
-
-
-  <PropertyGroup Condition=" '$(TargetFramework)' == 'netstandard1.6' ">
-    <DefineConstants>$(DefineConstants);NET_CORE</DefineConstants>
-    <DebugType>portable</DebugType>
-  </PropertyGroup>
-
-
-
-  <PropertyGroup Condition=" '$(TargetFramework)' == 'net45' ">
-    <DebugType>full</DebugType>
-  </PropertyGroup>
-
-
+  <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.0' ">
+    <PackageReference Include="Newtonsoft.Json" Version="9.0.1" />
+  </ItemGroup>
 
   <ItemGroup Condition=" '$(TargetFramework)' == 'net45' ">
     <PackageReference Include="System.Net.Http" Version="4.1.1" />
     <PackageReference Include="Newtonsoft.Json" Version="9.0.1" />
     <Reference Include="System" />
+    <Reference Include="Microsoft.CSharp" />
+  </ItemGroup>
+
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net461' ">
+    <PackageReference Include="Newtonsoft.Json" Version="9.0.1" />
+    <Reference Include="System" />
+    <Reference Include="System.Net.Http" />
     <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
 
